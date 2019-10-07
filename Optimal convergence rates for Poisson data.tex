@@ -1,0 +1,1255 @@
+\RequirePackage{amsmath}
+
+\documentclass[10pt]{iopart}
+\usepackage{todonotes}
+\usepackage{amsfonts}
+\usepackage{mathptmx}
+\usepackage{mathrsfs}
+\usepackage{amsmath}
+\usepackage{amsthm,amssymb}
+\usepackage{latexsym,bm}
+\usepackage{marvosym}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    citecolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+}
+\usepackage[margin=3.3cm, top=25mm]{geometry}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{assumption}[theorem]{Assumption}
+\newtheorem{remark}[theorem]{Remark}
+\newcommand{\dif}{\mathrm{d}}
+\renewcommand{\thefootnote}{\arabic{footnote}}
+\DeclareMathOperator*{\argmin}{argmin}
+
+\newcommand{\Zvar}{Z^{(s)}}
+\newcommand{\Sset}{\mathcal{S}^{s}}
+
+\begin{document}
+
+\title[Convergence rates for Poisson and empirical data]{Convergence rates for variational regularization
+of inverse problems with Poisson and empirical process data}
+
+\author{Yusufu Simayi, Benjamin Sprung and Thorsten Hohage}
+
+\address{Institute for Numerical and Applied Mathematics, University of G\"{o}ttingen,
+Lotzestr. 16-18, 37083, G\"{o}ttingen, Germany}
+\ead{y.simayi@math.uni-goettingen.de and hohage@uni-goettingen.de}
+\vspace{10pt}
+\begin{indented}
+\item[\today]
+\end{indented}
+
+\begin{abstract}
+We discuss variational regularization method for linear and nonlinear ill-posed inverse problems described by operator 
+equations $F(f^{\dagger})=g^{\dagger}$, where $g^{\dagger}$ is an integrable, non-negative function and the measured data are described 
+either by a Poisson process or an empirical process with density $g^{\dagger}$. Such inverse problems occur for example in photonic imaging 
+and parameter identification problems in stochastic differential equations, and variational regularization methods for such problems
+have been studied intensively in recent years. However, known rates of convergence for mildly ill-posed problems with such data are not 
+optimal so far. For both noise models, Kullback-Leibler data fidelity terms appear naturally as negative log-likelihood 
+functionals. We improve the reconstruction error bound in expectation for the mildly ill-posed case. In order to improve
+rates of convergence for variational regularization, the key tool of our analysis are deviation inequalities for Poisson and empirical 
+process in negative Besov norms and interpolation inequalities in Besov spaces. 
+\end{abstract}
+
+\noindent{\it Keywords}: Optimal order, source conditions, variational regularization, convergence rate, Poisson process, empirical process, 
+Kullback-Leibler divergence.
+
+\submitto{Inverse Problems}
+
+
+
+\section{Introduction}
+
+\hspace{0.5cm}
+In this paper, we study a statistical convergence analysis for variational regularization method of linear and nonlinear ill-posed inverse 
+problems with Poisson and empirical process data in Hilbert spaces. Suppose that the unknown quantity $f^{\dagger}$ is an 
+element of a Hilbert space $\mathbb{X}$ and $g^{\dagger}$ is a non-negative, integrable function on the manifold $\mathbb{M}$.
+Then we consider an operator equation for a continuous (possibly nonlinear) operator $F: \mathbb{X}\rightarrow 
+\mathbb{Y}\subset L^{2}(\mathbb{M})$ between the Hilbert spaces $\mathcal{B}\subset\mathbb{X}$ and $\mathbb{Y}$ by
+\begin{equation}\label{1}
+F(f^{\dagger})=g^{\dagger}.
+\end{equation}
+
+For the case of inverse problems with Poisson data, the ideal data $g^{\dagger}\in L^{1}(\mathbb{M})$ can be interpreted as a photon 
+density on some measurement manifold $\mathbb{M}\subset\mathbb{R}^{d}$ and the observed data will be drawn from a Poisson point process with 
+density $ng^{\dagger}$, where the parameter $n>0$ is often interpreted as an exposure time. In the case of inverse problems with
+data given by empirical processes, $g^{\dagger}$ corresponds to probability density of the i.i.d random variables and the data will be sampled 
+from i.i.d random variables with probability density $g^{\dagger}$.
+
+Inverse problems with Poisson data have been intensively studied over the last two decades since they have many applications in photonic imaging,
+medicine, astronomy \cite{Bertero2009}, coherent x-ray imaging \cite{Hohage2013}, fluorescence microscopy and positron emission tomography 
+\cite{Cavalier2002, Vardi1985}. In these inverse problems, the photon count data are Poisson distributed for some physical reasons. 
+There exists various efficient methods applied for ill-posed linear and nonlinear inverse problems with Poisson data, see, e.g., 
+\cite{antoniadis2006, Benning2011, Bertero2009, Cavalier2002, Hohage2016, Hohage2013, Munk2009, Werner2012}. Inverse problems 
+with empirical data described by stochastic differential equations also studied by Dunker and Hohage \cite{Dunker2014} and
+obtained convergence rates for penalized maximum likelihood estimator. 
+
+In order to construct a stable approximation to $f^{\dagger}$, we consider a Tikhonov type estimator 
+\begin{equation}\label{2}
+\widehat{f}_{\alpha}\in \argmin_{f\in\mathcal{B}}\left[\mathcal{S}(G_{n}, F(f))+\frac{\alpha}{2}\|f\|_{\mathbb{X}}^{2}\right], 
+\end{equation}
+where $\alpha>0$ is a regularization parameter, $G_{n}$ describes the observed data, $\mathcal{S}$ is the non-quadratic data 
+fidelity term and $\mathcal{R}(f)=\frac{1}{2}\|f\|^{2}$ is quadratic penalized term. If $\mathcal{S}$ is also quadratic with Hilbert space,
+then (\ref{2}) is a usual Tikhonov regularization. If the operator $F$ is linear and the data fidelity and penalized terms are convex in
+its second argument, then the minimization problem (\ref{2}) is convex.  
+
+The Kullback-Leibler divergence has been studied as a data fidelity term for inverse problems with Poisson data in a number of literature 
+\cite{antoniadis2006, Benning2011, Cavalier2002, Dunker2014, Hohage2013, Hohage2016, Tsybakov2009, Werner2012} and for the inverse problem with 
+empirical process data by Dunker and Hohage \cite{Dunker2014} under deterministic and stochastic error assumptions. Moreover, it also 
+corresponds to other types of noise models, see, e.g., \cite{Tsybakov2009}. Dunker and Hohage \cite{Dunker2014} even show that Kullback-
+Leibler type data fidelity term provide better results than the quadratic data fidelity term by using Monte-Carlo simulation. 
+
+There exist a large number of literature on regularization methods for linear and nonlinear ill-posed inverse problems with 
+Poisson and empirical process data. In particular, Nowak et al.~\cite{Nowak2000} proposed a Bayesian multiscale framework for Poisson inverse 
+problems with discrete case. Szkutnik \cite{Szkutnik2000} study a quasi-maximum likelihood approach for projection type estimator. Reynaud-Bouret
+\cite{ReynaudBouret2003}, Antoniadis and Bigot \cite{antoniadis2006} and Cavalier et al \cite{Cavalier2002} achieved optimal convergence 
+rates of linear ill-posed problems with Poisson data by. Recently, Werner and Hohage \cite{Hohage2013, Hohage2016, Werner2012} intensively studied
+convergence rates for variational regularization methods of nonlinear inverse problems in Banach space with Poisson data in the context of discrete
+and continuous setting and further show the efficient algorithms for such inverse problems with several applications over the last five years. 
+Furthermore, Dunker and Hohage \cite{Dunker2014} also studied convergence rates for variational regularization with empirical process data
+and derived general convergence results of the risk for penalized maximum likelihood estimator with Tikhonov-type and Newton-type regularization
+methods. Although Werner and Hohage \cite{Werner2012}, Dunker and Hohage \cite{Dunker2014} obtained convergence rates for 
+variational regularization of inverse problems with Poisson and empirical process data in terms of an index function, respectively, 
+these results cannot show order optimality for mildly ill-posed inverse problems. Moreover, Antoniadis 
+and Bigot \cite{antoniadis2006} achieved optimal convergence rates for Poisson inverse problem by using a Wavelet-Galerkin approximation method in
+certain function spaces, however their approach is restricted to linear operators.  Apart from those results, Weidling et al \cite{Weidling2018} in recent years developed a method for verification of
+variational source conditions in Hilbert and Banach spaces under some smoothness assumptions. These results can accelerate our convergence analysis for the estimator (\ref{2}) to achieve better
+reconstruction error bounds in a stochastic setting. 
+
+In this paper, we will further improve convergence rates with explicit exponent for variational regularization of mildly ill-posed nonlinear inverse 
+problems with Poisson and empirical process data simultaneously. To derive better reconstruction error bounds, we will first need to establish deviation
+inequalities for Poisson and empirical processes in negative Besov norms and apply the interpolation theory in terms of the Besov norms. With the 
+help of these results we are able to improve the convergence rates. Moreover, to derive order optimal rates for variational regularization, we will 
+state a conjecture to bound noise processes in terms of the negative Besov norms with the limiting case.   
+
+The structure of this paper is organized as follows: In section \ref{sec:preliminaries}, we give some properties of Poisson and empirical 
+processes and recall recent results on uniform concentration inequalities for these processes obtained by Reynaud-Bouret \cite{ReynaudBouret2003} 
+and Massart \cite{Massart2000}, respectively. In section \ref{sec:deviation_ieq} we will obtain large deviation inequalities for the suprema of 
+Poisson and empirical processes in negative Besov norms based on results of uniform concentration inequalities for Poisson and empirical
+processes \cite{Massart2000, ReynaudBouret2003} and we describe our conjecture. In section \ref{sec:rates}, we introduce source conditions 
+in the form of variational inequality and present the previous convergence rate results derived by Hohage and Werner \cite{Hohage2016}, which
+is helpful to clarify that how much small their convergence rates are. Finally, our main results will be shown in Theorem \ref{Theorem-4.10}
+and optimal orders of convergence rates in expectation are also stated under our conjecture.  
+
+\section{Preliminaries for Poisson and empirical processes}\label{sec:preliminaries}
+\hspace{0.5cm}
+Let $\mathbb{M}\subset\mathbb{R}^{d}$ be a Riemannian manifold, then a point process on $\mathbb{M}$ can be regarded as a random collection
+of points $\{x_{1}, \cdots, x_{N}\}\subset \mathbb{M}$, where the positions $x_{j}$ of detected points and the total observed points $N$ 
+are random. For the given observation $X_{j}=x_{j}$ on $\mathbb{M}$, the sum of Dirac-measures can be defined by
+\begin{equation}\label{3}
+G=\sum_{j=1}^{N}\delta_{x_{j}}, \quad \mbox{for}~ j=1,2 \cdots, N
+\end{equation}
+at the point positions and
+\begin{equation*}
+G(\mathbb{A})=\#\{j=\{1, 2, \cdots, N\}| x_{j}\in\mathbb{A}\}
+\end{equation*}
+are the number of points in the measurable subset $\mathbb{A}\subset\mathbb{M}$. 
+As described by Kingman \cite{kingman1993}, the Dirac measure (\ref{3}) is called Poisson point process (or Poisson process)
+with intensity $g^{\dagger}\in L^{2}(\mathbb{M})$ if the following properties are satisfied:
+
+(i) For any choice of disjoint and measurable subsets $\mathbb{A}_{1}, \cdots, \mathbb{A}_{m}\subset\mathbb{M}$, the random variables 
+$G(\mathbb{A}_{1}), \cdots, G(\mathbb{A}_{m})$ are stochastically independent.
+
+(ii) For any measurable subset $\mathbb{A}\subset\mathbb{M}$, we have $\mathbf{E}[G(\mathbb{A})]=\int_{\mathbb{A}}g^{\dagger}\mathrm{d}x$. 
+
+Note that if $g^{\dagger}$ is normalized as a density function for an 
+exposure time $n>0$, then $n=\mathbf{E}[N]$ is regarded as the expected total number of points.
+
+One has shown that for each measurable subset $\mathbb{A}\in\mathbb{M}$ the random variable $G(\mathbb{A})$ is Poisson distributed
+with parameter $\lambda:= \int_{\mathbb{A}} g^{\dagger}\mathrm{d}x$, which is given by
+\begin{equation*}
+\mathbf{P}[G(\mathbb{A})=k]=e^{-\lambda}\frac{\lambda^{k}}{k!}, \quad\text{for}~ k\in\mathbb{N},
+\end{equation*}
+see Theorem 1.11.8 in \cite{kingman1993}.  Furthermore, let $G=\sum_{j=1}^{N}\delta_{x_{j}}$ be a Poisson process with intensity
+$g^{\dagger}\in L^{2}(\mathbb{M})$, then the process $G$ conditioned on $G(\mathbb{M})=N$ is an empirical process with parameter $N$
+and probability measure $\xi(\mathbb{A})$ is give by
+\begin{equation*}
+\xi(\mathbb{A}):=\frac{\int_{\mathbb{A}}g^{\dagger}\mathrm{d}x}{\int_{\mathbb{M}}g^{\dagger}\mathrm{d}x}
+\end{equation*}
+and the distribution 
+\begin{equation*}
+\mathbf{P}(G(\mathbb{A}_{1})=n_{1}, \cdots, G(\mathbb{A}_{m})=n_{m}|G(\mathbb{M})=N)=N!\prod_{i=0}^{m}
+\frac{\xi(\mathbb{A}_{t})^{n_{i}}}{n_{i}!},
+\end{equation*}
+see the proof of Proposition 2.2 \cite{Hohage2016}. 
+
+Since the Poisson process $G=\sum_{j=1}^{N}\delta_{x_{j}}$ can be seen as a random measure, we can define integrals over continuous function
+$\Gamma: \mathbb{M}\rightarrow \mathbb{R}$ with respect to $G$. i.e., $\int_{\mathbb{M}}\Gamma\mathrm{d}G=\sum_{j=1}^{N}\Gamma(x_{j})$.
+For any complex continuous function $\Gamma: \Omega\rightarrow \mathbb{C}$ with respect to $G$, we have
+\begin{equation}\label{4}
+\mathbf{E}\left[\int_{\mathbb{M}}\Gamma\mathrm{d}G\right]=\int_{M} g^{\dagger}\Gamma\mathrm{d}x, \quad \mathbf{Var}
+\left[\int_{\mathbb{M}}\Gamma\mathrm{d}G\right]=\int_{M} g^{\dagger}|\Gamma|^{2}\mathrm{d}x
+\end{equation}
+whenever the integral on the right hand sides exist, (see \cite{kingman1993}).
+
+As introduced by Werner and Hohage in \cite{Hohage2016}, we need an additional parameter $n>0$, which is called an exposure time. 
+Assume the data $\widetilde{G}_{n}$ are drawn from a Poisson process with intensity $ng^{\dagger}$ and define a scaled Poisson process
+$G_{n}=\frac{1}{n}\widetilde{G}_{n}$, where the scaling factor $\frac{1}{n}$ ensure that the expectation of the integral function is 
+independent of $n>0$, see (\cite{Hohage2016}). Thus, (\ref{4}) yields
+\begin{equation}\label{5}
+\mathbf{E}\left[\int_{\mathbb{M}}g\mathrm{d}G_{n}\right]=\int_{M} g^{\dagger}g\mathrm{d}x, \quad \mathbf{Var}
+\left[\int_{\mathbb{M}}g\mathrm{d}G_{n}\right]=\frac{1}{n}\int_{M} g^{\dagger}g^{2}\mathrm{d}x.
+\end{equation}
+This indicate that the noise level should be determined by the scaling factor $\frac{1}{\sqrt{n}}$.
+We consider the convergence rates and optimality for the convergence rates of estimator to inverse problem (\ref{1})
+with the data $G_{n}$ in the limit $n\rightarrow \infty$. 
+
+
+In addition, we also consider other types of stochastic process. An empirical process is a finite and infinite sequence of independent
+random variables and it occurs in non-parametric statistics. If the observable data are described by independent and identically distributed random
+variables $Y_{1}, \cdots, Y_{n}$ and each of which has probability density $g^{\dagger}$. This problem can be formulated as a nonlinear ill-posed
+operator equation as (\ref{1}). For the given observations $Y_{j}=y_{j}$, the empirical measure is given by
+\begin{equation}
+G_{n}=\frac{1}{n}\sum_{j=1}^{n}\delta_{y_{j}},
+\end{equation}
+where $\delta_{Y_{j}}$ are the Direc measure. For any Borel measurable subset $\mathbb{A}\subset \mathbb{M}$, we have
+\begin{equation*}
+G_{n}=\frac{1}{n}\sum_{j=1}^{n}\mathbb{I}_{\mathbb{A}}(Y_{j})=\frac{\#\{j\leq n: Y_{j}\in\mathbb{A}\}}{n}.
+\end{equation*}
+Analogously, the empirical process $G_{n}=\frac{1}{n}\sum_{j=1}^{n}\delta_{y_{j}}$ also the random measure such that 
+the integrals over complex continuous function $\tilde{\Gamma}: \mathbb{M}\rightarrow \mathbb{R}$ w.r.t. $G_{n}$ can be defined as 
+\begin{equation*}
+\int_{\mathbb{M}}\tilde{\Gamma}\mathrm{d}G_{n}=\sum_{j=1}^{N}\tilde{\Gamma}(x_{j}).
+\end{equation*}
+For any complex continuous function $\tilde{\Gamma}: \mathbb{M}\rightarrow\mathbb{C}$ w.r.t. $G_{n}$, we have
+\begin{equation}
+\mathbf{E}\left[\int_{\mathbb{M}}\tilde{\Gamma}\mathrm{d}G_{n}\right]=\int_{M} g^{\dagger}\tilde{\Gamma}\mathrm{d}x, \quad \mathbf{Var}
+\left[\int_{\mathbb{M}}\tilde{\Gamma}\mathrm{d}G_{n}\right]=\frac{1}{n}\int_{M} g^{\dagger}|\tilde{\Gamma}|^{2}\mathrm{d}x
+\end{equation}
+whenever the integral on the right hand sides exist.
+
+Finally, we will recall uniform concentration inequalities for the suprema of Poisson process and empirical process, respectively. More precisely,  the uniform concentration inequality for 
+the suprema of empirical processes has been derived by Massart in Theorem 3 \cite{Massart2000}. Similarly, such kind of concentration inequality for the suprema of Poisson process has been obtained by Reynaud-Bouret in
+Corollary 2 \cite{ReynaudBouret2003} . These concentration inequalities are actually established based on the Talagrand's concentration inequalities in product spaces \cite{Talagrand1996}.  
+
+\begin{lemma}\label{Lemma-2.1}. Let $G_{n}$ be either a Poisson process or empirical process
+with intensity $g^{\dagger}$ and let $\mathcal{F}\subset L^{\infty}(\mathbb{M})$ be
+a countable family of functions with $\|\varphi\|_{\infty}\leq b$ for all $\varphi\in\mathcal{F}$. Moreover, let 
+\begin{equation}\label{8}
+Z:=n\sup_{\varphi\in\mathcal{F}}\left|\int_{\mathbb{M}}\varphi(\mathrm{d}G_{n}-g^{\dagger}\mathrm{d}x)\right| \quad \mbox{and}\quad 
+v:=n\sup_{\varphi\in\mathcal{F}}\int_{\mathbb{M}}\varphi^{2}g^{\dagger}\mathrm{d}x.
+\end{equation}
+(i) If $G_{n}$ is a Poisson process, then the following inequality holds true 
+\begin{equation}\label{9}
+\mathbf{P}\left[Z\geq (1+\varepsilon)\mathbf{E}[Z]+2\sqrt{3v\eta}+\mu_{1}(\varepsilon)b\eta\right]\leq \exp(-\eta)
+\end{equation}
+for  $\eta, \varepsilon>0$, where $\mu_{1}(\varepsilon)=\frac{5}{4}+\frac{32}{\varepsilon}$.
+
+\hspace{-0.8cm} (ii) If $G_{n}$ is an empirical process, then the following inequality holds true
+\begin{equation}\label{10}
+\mathbf{P}\left[Z\geq (1+\varepsilon)\mathbf{E}[Z]+2\sqrt{2v\eta}+\mu_{2}(\varepsilon)b\eta\right]\leq \exp(-\eta)
+\end{equation}
+for  $\eta, \varepsilon>0$, where $\mu_{2}(\varepsilon)=\frac{5}{2}+\frac{32}{\varepsilon}$.
+\end{lemma}
+
+Actually, Lemma \ref{Lemma-2.1} can be seen as a combination of the results of Corollary 2 in \cite{ReynaudBouret2003} and Theorem 3 in 
+\cite{Talagrand1996}. In recent years, Werner and Hohage \cite {Werner2012} and Dunker and Hohage \cite{Dunker2014} derived the deviation 
+inequalities for the noise process on the Sobolev ball based on the results of Lemma \ref{Lemma-2.1}, respectively. 
+However, these deviation inequalities do not yield optimal bounds for the noise error. For this reason, we further study deviation inequalities for these
+processes in terms of negative Besov norms.
+
+
+\section{Deviation inequalities for Poisson and empirical processes in negative Besov norms}
+\label{sec:deviation_ieq}
+
+\hspace{0.5cm}
+The main purpose of this section is to derive deviation inequalities for Poisson and empirical processes in negative Besov norms 
+with Fourier analysis, which can be established based on the results obtained by Reynaud-Bouret \cite{ReynaudBouret2003} and Massart 
+\cite{Massart2000}, respectively. Before we establish our deviation inequalities, we will recall some basic properties of the periodic Besov spaces 
+
+
+\subsection{Periodic distributions and their Fourier transform} 
+Let $\mathbb{T}^{d}:=\mathbb{R}^{d}/\mathbb{Z}^{d}$ denote the $d$-dimensional torus 
+and let $\mathscr{D}(\mathbb{T}^{d})$ denote the space of all complex-valued, infinitely differentiable, multi-periodic functions with 
+periodicity $2\pi$. Equipped with the topology generated by the family of semi-norms 
+\begin{equation*}
+\|P\|_{r}:=\sup_{x\in\mathbb{T}^{d}}\left|\partial^{r}P(x)\right| \quad \mbox{with a multi-index}~ 
+r=(r_{1}, \cdots, r_{d})\in\mathbb{N}_{0}^{d},
+\end{equation*}
+the space $\mathscr{D}(\mathbb{T}^{d})$ becomes a locally convex topological 
+vector space. The topological dual space $\mathscr{D}'(\mathbb{T}^{d})$
+of $\mathscr{D}(\mathbb{T}^{d})$ is the space of periodic distribution. 
+We use the common notation $\langle P,\varphi\rangle:= P(\varphi)$ for 
+$\in\mathscr{D}'(\mathbb{T}^{d})$ and $\varphi\in \mathscr{D}(\mathbb{T}^{d})$. 
+It follows from the definition of the topology of $\mathscr(D)(\mathbb{T}^{d})$ 
+that for any $P\in\mathscr{D}'(\mathbb{T}^{d})$ there exist constants 
+$M\in\mathbb{N}$ and $c>0$ such that 
+\begin{equation}\label{11}
+|\langle P, \varphi\rangle|\leq c\sum_{|r|\leq M}\|\varphi\|_{r}
+\qquad \mbox{for all }\varphi\in \mathscr{D}(\mathbb{T}^{d}).
+\end{equation}
+As the trigonometric monomials $e_{\kappa}(x):=(2\pi)^{-d/2}e^{i\kappa\cdot x}$, 
+$\kappa\in\mathbb{Z}^{d}$ obviously belong to $\mathscr{D}(\mathbb{T}^{d})$, the 
+Fourier transform $\widehat{P}:\mathbb{Z}^d\to \mathbb{C}$ of any periodic distribution 
+$P\in\mathscr{D}'(\mathbb{T}^{d})$ is well defined by 
+\begin{equation*}
+\widehat{P}(\kappa)=\langle P, e_{\kappa}\rangle, \quad \kappa\in \mathbb{Z}^{d}.
+\end{equation*}
+It follows from (\ref{11}) that $|\widehat{P}(\kappa)|\leq C_{M}(1+|\kappa|)^{-M}$ for some $C_{M}>0$, and this can be used to show that $P$ 
+can be represented by its Fourier series
+\begin{equation*}
+P=\sum_{\kappa\in\mathbb{Z}^{d}}\widehat{P}(\kappa)e_{\kappa}
+\end{equation*}
+with convergence in $\mathscr{D}'(\mathbb{T}^{d})$. For more details, we refer to \cite{Grafakos2009, Schmeisser1987}. 
+
+
+\subsection{Definition of periodic Besov spaces} 
+
+Let $\phi_{0}(x)$ be the characteristic function of the unit box in $\mathbb{R}^{d}$. We will need a smooth $\phi_0$
+and $\phi_{l}(x)$ be a system of the corresponding dyadic resolution of unity, which are given by
+\begin{equation*}
+\phi_{0}(x):=1, \quad\text{for}~ |x|_{\infty}\leq \frac{1}{2} \quad\text{and}\quad \phi_{0}(x):=0\quad \text{for}~ \text{else}
+\end{equation*}
+and 
+\begin{equation*}
+\phi_{l}(x):=\phi_{0}(2^{-l}x)-\phi_{0}(2^{-l+1}x), \quad\text{for}~ l\in\mathbb{N}.
+\end{equation*}
+Note that this defines a partition of unity, i.e., $\sum_{l=0}^{\infty}\phi_{l}(x)=1$ for $x\in\mathbb{R}^{d}$.
+
+For $P\in\mathscr{D}'(\mathbb{T}^{d})$ and $l\in\mathbb{N}_0$, we define
+\begin{equation}\label{12}
+P_{l}:=\sum_{\kappa\in\mathbb{Z}^{d}}\phi_{l}(\kappa)\widehat{P}(\kappa)e_{\kappa}.
+\end{equation}
+As the sum is finite, we have $P_{l}\in\mathscr{D}(\mathbb{T}^{d})$. Moreover, 
+$P = \sum_{l=0}^\infty P_l$ with convergence in $\mathscr{D}'(\mathbb{T}^{d})$.
+
+Let $s\in\mathbb{R}$ and $p, q\in [1, \infty]$ be given parameters of smoothness, integrability and summability respectively.  
+Then we define the periodic Besov space as
+\begin{equation*}
+B_{p, q}^{s}(\mathbb{T}^{d}):=\{P\in \mathscr{D}'(\mathbb{T}^{d}): \|P\|_{B_{p, q}^{s}(\mathbb{T}^{d})}<\infty\},
+\end{equation*}
+where the Besov norm is given by
+\begin{equation*}
+\|P\|_{B_{p, q}^{s}(\mathbb{T}^{d})}:=
+\left\{\begin{array}{l l}
+\left(\sum_{l\geq 0}2^{slq}\left\|P_l\right\|_{L^{p}(\mathbb{T}^{d})}^{q}\right)^{1/q},&
+q<\infty,\\
+\sup_{l\geq 0}2^{sl}\left\|P_l\right\|_{L^{p}(\mathbb{T}^{d})},&q=\infty.
+\end{array}\right.
+\end{equation*}
+The Besov spaces $B_{p, q}^{s}(\mathbb{T}^{d})$ are Banach spaces such that
+\begin{equation*}
+\mathscr{D}(\mathbb{T}^{d})\hookrightarrow B_{p, q}^{s}(\mathbb{T}^{d})\hookrightarrow \mathscr{D}^{'}(\mathbb{T}^{d}),
+\end{equation*}
+where the first embedding is dense if $p, q$ are finite. In particular we have $B_{2,2}^{s}(\mathbb{T}^{d})=H_{2}^{s}(\mathbb{T}^{d})$ for $p=q=2$ and for all
+$s\in\mathbb{R}$, where $H_{2}^{s}$ denotes a Sobolev space. If the smoothness $s=0$, then we have $B_{2,2}^{0}(\mathbb{T}^{d})=L^{2}(\mathbb{T}^{d})$.
+
+
+\subsection{Bounds on Besov norms of empirical and Poisson noise.}
+
+\hspace{0.5cm}
+Since we are interested in the Besov space $B_{p, q}^{s}$ with a general bounded Lipschitz domain $\mathbb{M}\subset \mathbb{R}^{d}$ and study deviation inequalities
+for Poisson and empirical processes on this domain,  we define a Besov space with the norm by
+\begin{equation*}
+\|P\|_{B_{p, q}^{s}(\mathbb{M})}:=\inf\left\{\|\tilde{P}\|_{B_{p,q}^{s}}: \tilde{P}\in B_{p,q}^{s}(\mathbb{R}^{d}), ~ \tilde{P}|_{\mathbb{M}}=P~ \text{in the sense of} \mathscr{D}^{'}(\mathbb{M})\right\},
+\end{equation*} 
+where the infimum is taken over all extensions $\tilde{P}\in B_{p,q}^{s}(\mathbb{R}^{d})$. 
+In the following, we study $P=G_{n}-g^{\dagger}$ where $G_n$ is either an empirical process of a rescaled Poisson process 
+with density $g^{\dagger}$. We want to bound 
+\begin{equation*}
+\Zvar:=\|P\|_{B_{2, \infty}^{-s}(\mathbb{M})}=\sup_{l\geq 0}\Zvar_l
+\qquad\mbox{where}\qquad 
+\Zvar_l:=2^{-sl}\|P_{l}\|_{L^{2}(\mathbb{M})}.
+\end{equation*}
+To apply Lemma \ref{Lemma-2.1} to each $P_{l}$, we introduce
+\[
+\Sset_{l}:=\{\mathfrak{f}\in L^{2}(\mathbb{M}): 
+\|\mathfrak{f}\|_{L^{2}}\leq 2^{-sl} ~\text{and}~\widehat{\mathfrak{f}}(\kappa)
+=0~ \mbox{if}~ \kappa \notin\mbox{supp}~\phi_{l}\}\,.
+\]
+This gives that
+\allowdisplaybreaks
+\begin{align}\label{13}
+\Zvar_l&%2^{-sl}\|P_{l}\|_{L^{2}(\mathbb{M})}
+=\sup_{\{\mathfrak{f}\in L^{2}(\mathbb{M}): \|\mathfrak{f}\|_{L^{2}}\leq 2^{-sl}\}}
+\left|\int_{\mathbb{M}}P_{l}(x)\mathfrak{f}(x)\mathrm{d}x\right|\nonumber\\
+&=\sup_{\|\mathfrak{f}\|_{L^{2}(\mathbb{M})}\leq 2^{-sl}}\left|\sum_{\kappa\in \mathbb{Z}^{d}}
+\widehat{\mathfrak{f}}(\kappa)\widehat{P}_{l}(\kappa)\right|\nonumber
+=\sup_{\|\mathfrak{f}\|_{L^{2}(\mathbb{M})}\leq 2^{-sl}}\left|\sum_{\kappa\in \mathbb{Z}^{d}}\widehat{P}(\kappa)\phi_{l}(\kappa)
+\widehat{\mathfrak{f}}(\kappa)\right|\nonumber\\
+&\leq \sup_{\|\mathfrak{f}\|_{L^{2}(\mathbb{M})}\leq 2^{-sl}}\left|\sum_{\phi_{l}(\kappa)\neq 0}\widehat{\mathfrak{f}}
+(\kappa)\widehat{P}(\kappa)\right|\nonumber\\
+&\leq \sup_{\mathfrak{f}\in \Sset_{l}}\left|\int_{\mathbb{M}}\mathfrak{f}(x)(\mathrm{d}G_{n}-g^{\dagger}\mathrm{d}x)\right|.
+\end{align}
+
+In order to derive deviation inequalities, we need to bound the expectation of $\Zvar$ in Besov spaces with the negative
+smoothness index $s>d/2$.
+
+\begin{lemma}[{\bf Expectation of Poisson and empirical processes}]\label{Lemma-3.2}
+Let $G_{n}$ be either a rescaled Poisson process or an empirical process with intensity $g^{\dagger}\in L^{\infty}(\mathbb{M})$. 
+Let $\mathbb{M}\subset\mathbb{R}^{d}$ be a bounded domain with the Lipschitz boundary $D>0$. 
+Assume that $Z^{(s)}$ is defined by () with the smoothness index $s>\frac{d}{2}$. Then there exists a constant $C$ such that
+\begin{equation}\label{14}
+\mathbf{E}\left[\left\|G_{n}-g^{\dagger}\right\|_{B_{2, \infty}^{-s}(\mathbb{M})}\right]<\frac{CD}{\sqrt{n}}
+\|g^{\dagger}\|_{L^{1}(\mathbb{M})}.
+\end{equation} 
+\end{lemma}
+
+\begin{proof}
+Using the continuous embedding results in Besov spaces we know that $B_{2, 2}^{-s}\subset B_{2, \infty}^{-s}$ for $s>d/2$, then 
+\begin{equation}\label{15}
+\left\|G_{n}-g^{\dagger}\right\|_{B_{2, \infty}^{-s}(\mathbb{M})}\leq C_{1}\left\|G_{n}-g^{\dagger}\right\|_{B_{2, 2}^{-s}(\mathbb{M})}
+\end{equation}
+holds true for some constant $C_{1}>0$. From Lemma A.3 in Werner and Hohage \cite{Werner2012}, we have
+\begin{equation*}
+\mathbf{E}\left[\left\|G_{n}-g^{\dagger}\right\|_{H^{-s}(\mathbb{M})}\right]\leq \frac{C_{2}D}{\sqrt{n}}\|g^{\dagger}\|_{L^{1}(\mathbb{M})}
+\end{equation*}
+for some constant $C_{2}>0$. Since $H^{-s}(\mathbb{M})=B_{2, 2}^{-s}(\mathbb{M})$ for $s>d/2$, by taking expectation on both 
+side of (\ref{15}) we immediately derive (\ref{14}) with $C=C_{1}C_{2}>0$.
+\end{proof}
+
+For the limiting case $s=d/2$ the expectation of the noise process $\|G_{n}-g^{\dagger}\|_{B_{2, \infty}^{-d/2}(\mathbb{M})}$ is not easy to bound.
+Therefore, we will state about the result as a conjecture. 
+
+\begin{conjecture}\label{Conjecture-3.3}
+For an empirical or a Poisson process $G_{n}$ with intensity $g^{\dagger}$ and the expected count $n$, we have
+\begin{equation}\label{*}
+\sup_{n\in\mathbb{N}}\mathbf{E}\left[\frac{\sqrt{n}}{(\ln n)^{m}}\|G_{n}-g^{\dagger}\|_{B_{2, \infty}^{-d/2}}\right]<\infty.
+\end{equation}
+for $m\geq 0$.
+\end{conjecture}
+As we seen in Lemma \ref{Lemma-3.2}, the expectation for the noise process can be bounded in the norms of Besov space
+$B_{2, \infty}^{s}(\mathbb{M})$ with smoothness $s>d/2$.  For the Gaussian white noise process, this conjecture holds true for
+$s=d/2$ and for any $p\in[1, \infty)$, which has been proven by Veraar \cite{Veraar2011} in Proposition 2.3. If one can prove this conjecture
+for Poisson and empirical processes in future, then it will give us an optimal rate as we obtain in Section \ref{sec:rates}. Now we are able to
+show the deviation inequalities for Poisson and empirical processes in negative Besov norms in the following theorem: 
+
+\begin{theorem}\label{Theorem-3.4} 
+Let $\mathbb{M}\subset \mathbb{R}^{d}$ be a bounded $d$-dimensional Lipschitz manifold. Let $B_{2,\infty}^{-s}(\mathbb{M})$ 
+denote the negative Besov space with index $s>\frac{d}{2}$. 
+\begin{enumerate}
+ \item  If $G_{n}$ be an empirical process with 
+intensity $g^{\dagger}$ and constant $c_{1}>0$ such that
+\begin{equation}\label{17}
+\mathbf{P}\left(\|G_{n}-g^{\dagger}\|_{B_{2, \infty}^{-s}}\geq 
+\frac{\tilde{C}+\eta}{\sqrt{n}}\right)\leq \exp\left(-\frac{\eta}{c_{1}}\right)
+\end{equation}
+holds true for all $n, \eta\geq 1$, where $c_{1}=\sqrt{8C_{3}}+34.5$ with $C_{3}>0$ and $\tilde{C}=2CD>0$.
+
+\item If $G_{n}$ be a Poisson process with intensity $g^{\dagger}$ and constant $c_{2}>0$ such that
+\begin{equation}\label{18}
+\mathbf{P}\left(\|G_{n}-g^{\dagger}\|_{B_{2, \infty}^{-s}}\geq 
+\frac{\tilde{C}+\eta}{\sqrt{n}}\right)\leq \exp\left(-\frac{\eta}{c_{2}}\right)
+\end{equation}
+holds true for all $n, \eta\geq 1$, where $c_{2}=\sqrt{12C_{3}}+33.25$.
+\end{enumerate}
+\end{theorem}
+
+
+\begin{proof}
+The proof of the theorem can be established based on the concentration inequalities  given by Lemma \ref{Lemma-2.1}, and we already
+bound the expectation of $\Zvar$. Thus, it is sufficient to control the constants $b$ and $v$ respectively. The proof of these two processes are quite similar such that
+we only proof here for Poisson process. Since $\Zvar:=\sup_{l\geq 0}2^{-sl}\|P_{l}\|_{L^{2}}$, we can control $b$ by 
+\begin{align}\label{19}
+b=\sup_{l\geq 0}\sup_{\mathfrak{f}\in \Sset_{l}}\left\|\mathfrak{f}\right\|_{\infty}\leq 
+\sup_{l\geq 0}\sup_{\mathfrak{f}\in \Sset_{l}}2^{\frac{d}{2}l}\|\mathfrak{f}\|_{L^{2}}\nonumber\\
+\leq \sup_{l\geq 0}2^{-(s-\frac{d}{2})l}\leq 1, 
+\end{align}
+To control the constant $v$, we use H\"{o}lder's inequality that
+\allowdisplaybreaks
+\begin{eqnarray}\label{20}
+v&=n\sup_{l\geq 0}\sup_{\mathfrak{f}\in \Sset_{l}}\int_{\mathbb{M}}\mathfrak{f}^{2}(x)g^{\dagger}\mathrm{d}x
+\leq n\sup_{l\geq 0}\|\mathfrak{f}^{2}\|_{L^{\infty}(\mathbb{M})}\|g^{\dagger}\|_{L^{1}(\mathbb{M})}\nonumber\\
+&\leq C_{3} n \sup_{l\geq 0}2^{dl}\|\mathfrak{f}\|_{L^{2}(\mathbb{M})}^{2}\|g^{\dagger}\|_{L^{1}(\mathbb{M})}\nonumber\\
+&\leq C_{3} n\sup_{l\geq 0} 2^{dl}2^{-2sl}\|g^{\dagger}\|_{L^{1}(\mathbb{M})}\nonumber\\
+&\leq C_{3} n\|g^{\dagger}\|_{L^{1}(\mathbb{M})}.
+\end{eqnarray}
+for some constant $C_{3}>0$. We apply (\ref{10}) in Lemma \ref{Lemma-2.1} to $\Zvar$:
+\begin{equation}\label{21}
+\mathbf{P}\left[\Zvar\geq (1+\varepsilon)\mathbf{E}[\Zvar]+\frac{\sqrt{8\widehat{\eta}v}}{n}+
+\frac{\widehat{\eta}\mu_{2}(\varepsilon)b}{n}\right]\leq \exp(-\widehat{\eta})
+\end{equation}
+for all $\widehat{\eta}>0$. By plugging (\ref{14}), (\ref{30}) and (\ref{31}) into (\ref{32}) and choosing $\varepsilon=1$
+and using $\mathbf{P}(A)=1-\mathbf{P}^{c}(A)$ and $\|g^{\dagger}\|_{L^{1}}=1$, we obtain
+\begin{align*}
+\mathbf{P}\left[\Zvar\leq \frac{2CD}{\sqrt{n}}
++\frac{\sqrt{8C_{3}\widehat{\eta}}}{\sqrt{n}}+\frac{34.5}{n}\widehat{\eta}\right]\geq 1-\exp(-\widehat{\eta})
+\end{align*}
+for all $\widehat{\eta}, n>0$. Since $\frac{1}{n}\leq \frac{1}{\sqrt{n}}$ and $\sqrt{\widehat{\eta}}\leq \widehat{\eta}$ for $n, 
+\widehat{\eta}\geq 1$, we derive 
+\begin{align*}
+\mathbf{P}\left[\Zvar\leq \frac{2CD}{\sqrt{n}}+
+\left(\sqrt{8C_{3}}+34.5\right)\frac{\widehat{\eta}}{\sqrt{n}}\right]\geq 1-\exp(-\widehat{\eta})
+\end{align*}
+for all $\widehat{\eta}, n>0$. Setting $\eta=\left(\sqrt{8C_{3}}+34.5\right)\widehat{\eta}$ and $\tilde{C}:=2CD$,
+we derive 
+\begin{equation*}
+\mathbf{P}\left(\Zvar\geq \frac{\tilde{C}+\eta}{\sqrt{n}}\right)\leq\exp\left(-\frac{\eta}
+{\sqrt{8C_{3}}+34.5}\right),
+\end{equation*}
+by taking $c_{1}=\sqrt{8C_{3}}+34.5$, we can derive the deviation inequality (\ref{28}). 
+As a consequence of the above argument, we can also establish a deviation inequality for Poisson process in negative Besov norms.
+\end{proof}
+
+\begin{remark}\label{Remark-3.5}
+It is important to highlight that a deviation inequality for Gaussian white noise in negative Besov norm has been proven in 
+Veraar in Corollary 3.7 \cite{Veraar2011}. They study regularity of the Gaussian white noise on the $d$-dimensional torus and it has
+paths in the Besov spaces $B_{p, \infty}^{-d/2}(\mathbb{T}^{d})$ with $p\in[1, \infty)$. Unfortunately, we have not succeeded  
+to derive the deviation inequalities for Poisson or empirical processes with negative smoothness index $s=\frac{d}{2}$ due to difficulties 
+to bound $\Zvar$. 
+\end{remark}
+
+
+
+\section{Convergence rates of inverse problem with Poisson and empirical data} 
+\label{sec:rates}
+\subsection{Known convergence results for Poisson and empirical}\label{Sec-4.1}
+
+
+\hspace{0.5cm} 
+In this section, we will recall the regularization properties of the variational methods. To estimate the smoothness of the unknown solution, 
+we will use a well-known source condition, which can be written in the form of a variational inequality introduced by Hofmann et al.
+\cite{Hofmann2007}. Since the derivation of convergence rates for inverse problems require a-priori knowledge about the unknown solution
+$f^{\dagger}$, we usually measure it by Bregman distance. The Bregman distance became an increasingly important tool to study a convergence analysis
+for variational methods of inverse problems.
+
+Let $\mathcal{R}: \mathbb{X}\rightarrow (-\infty, \infty]$ is a proper convex functional. For a subgradient $f^{*}\in\partial\mathcal{R}
+(f^{\dagger})$, the Bregman distance of $\mathcal{R}$ is given by
+\begin{equation*}
+\mathcal{D}_{\mathcal{R}}^{f^{*}}(f, f^{\dagger}):= \mathcal{R}(f)-\mathcal{R}(f^{\dagger})-\langle f^{*}, 
+f-f^{\dagger}\rangle,
+\end{equation*}
+for all $f\in\mathbb{X}$, where $\langle \cdot, \cdot\rangle$ denotes the duality product of $\mathbb{X}^{*}$ and $\mathbb{X}$. It has been known 
+that the Bregman distance is non-negative due to the convexity and $\mathcal{D}_{\mathcal{R}}^{f^{*}}(f^{\dagger}, f^{\dagger})=0$ if and only if
+$f=f^{\dagger}$. The Bregman distance depends on the penalty term $\mathcal{R}$ and the choice of $f^{*}$. If $\mathcal{R}(f)=\frac{1}{2}\|f-
+f_{0}\|_{\mathbb{X}}^{2}$ in Hilbert spaces, then we have $\mathcal{D}_{\mathcal{R}}^{f^{*}}(f, f^{\dagger})=\frac{1}{2}\|f-f^{\dagger}\|
+_{\mathbb{X}}^{2}$. Throughout this paper we will restrict ourselves in Hilbert space setting. Hence, as in Flemming \cite{Flemming2012}, 
+we need the following variational source conditions:
+
+\begin{assumption}[{\bf Variational source condition}] \label{assumption-4.1}
+Let $\mathcal{R}=\frac{1}{2}\|f\|_{\mathbb{X}}^{2}$. Assume that the variational inequality
+\begin{equation}\label{22}
+\frac{1}{4} \|f-f^{\dagger}\|_{\mathbb{X}}^{2}\leq \frac{1}{2}\|f\|_{\mathbb{X}}^{2}-\frac{1}{2}\|f^{\dagger}\|_{\mathbb{X}}^{2}+
+\Phi\left(\mathcal{T}(g^{\dagger}, F(f))\right)
+\end{equation}
+for all $f\in\mathbb{X}$ holds true, where $\Phi$ is concave monotonically increasing and $\Phi(0)=0$.
+\end{assumption}
+
+The convergence results under some deterministic noise assumptions in Hilbert spaces has been studied by Flemming \cite{Flemming2011, 
+FlemmingHofmannn2011}, where they proved that the variational inequality (\ref{22}) can be derived from $f^{\dagger}-f_{0}=\Psi(F'[f^{\dagger}]^{*}
+F'[f^{\dagger}])\omega$ for some $\omega\in\mathbb{X}$ with the tangential condition 
+\begin{equation*}
+\|F'[f^{\dagger}](f-f^{\dagger})\|_{\mathbb{Y}}\leq C\|F(f-f^{\dagger})\|_{\mathbb{Y}}
+\end{equation*}
+for all $f\in\mathbb{X}$ and for constant $C>0$, where $\Psi: [0, \infty)\rightarrow [0, \infty)$ is also index function and $\Psi^{2}$ is concave.
+$F: \mathcal{D}(F)\subset\mathbb{X}\rightarrow \mathbb{Y}$ is Fr\'{e}chet differentiable in an open domain $\mathcal{D}(F)$.
+Furthermore, they also proved in \cite{Flemming2012} that spectral source conditions implies variational source
+conditions. Assumption \ref{assumption-4.1} holds true for some index function $\Phi=\Phi_{\Psi}$ with $F=T$ and $\mathcal{T}(g^{\dagger}, g)
+=\|g-g^{\dagger}\|_{\mathbb{Y}}^{2}$, see \cite{Flemming2011, FlemmingHofmannn2011}. For instance, 
+\begin{equation*}
+\fl \qquad\Psi(\lambda)=\lambda^{\nu} \quad\text{for some}~ \nu\in(0, 1/2] \quad \Rightarrow \quad
+\Phi(\lambda)=c_{\lambda}\lambda^{\frac{2\nu}{2\nu+1}} \quad \text{for}~c_{\lambda}>0
+\end{equation*}
+and 
+\begin{equation*}
+\fl \qquad\Psi(\lambda)=(-\ln(\lambda))^{-p} \quad\text{for some}~ p>0 \quad \Rightarrow \quad
+\Phi(\lambda)=(-\ln(\lambda))^{-2p}\quad \text{for}~ p>0.
+\end{equation*}
+For more details, we refer to  \cite{Flemming2011}. In Hilbert space setting, Assumption
+\ref{assumption-4.1} is weaker than spectral source conditions. Weidling and Hohage \cite{Hohage2017} also 
+verified the some advantages of variational source conditions over the spectral source conditions. Variational source conditions even can be applied
+for non-quadratic data fidelity and penalty functionals and they allow to use in Banach space setting etc. 
+
+As given by Grasmair \cite{Grasmair2010}, the bias (approximation error) can be bounded by the Fenchel conjugation of 
+$-\Phi$, which is defined by
+\begin{equation}\label{23}
+(-\Phi)^{*}(\gamma)=\sup_{\omega\geq 0}(\gamma\omega+\Phi(\omega)), \quad \gamma>0.
+\end{equation}
+It will be bounded alternatively by a function $\Psi: (0, \infty)\rightarrow [0, \infty]$, i.e., $\Psi(\gamma)=
+(-\Phi)^{*}(-\frac{1}{\gamma})$. For the detail of the Fenchel duality, we refer to \cite{Ekeland1999}. The deterministic convergence rate
+results for ill-posed problems have been explored with different noise models, (see, e.g., \cite{Flemming2012, Flemming2011, Hohage2014, Hohage2016,
+Werner2012}). Here we consider the minimization problems with Poisson and empirical data in Hilbert spaces for obtaining optimal convergence 
+rates in terms of norm distance rather than the Bregman distance. 
+
+In Bayssian statistics, the negative log-likelihood functional always used as a data fidelity term if the measured data is random, 
+(see, \cite{Hohage2016}). If $G_{n}$ is a rescaled Poisson process, then the negative log-likelihood functional is given by
+\begin{equation}\label{24}
+\mathcal{S}_{0}(G_{n}, g)=-\ln \mathbf{P}_{g}[G_{n}]=\int_{\mathbb{M}} g\mathrm{d}x-\int_{\mathbb{M}}\ln g\mathrm{d}G_{n}.
+\end{equation}
+However, the negative log-likelihood for empirical process is slightly different from the data fidelity functional for Poisson process. For an empirical process
+$G_{n}$, the probability density is defined as $\mathbf{P}_{g}[y_{1}, \cdots, y_{n}]=\prod_{j=1}^{n}g(y_{j})$. 
+Then the corresponding negative log-likelihood is given by
+\begin{equation}\label{25}
+\mathcal{S}_{0}(G_{n}, g)=-\frac{1}{n}\ln\mathbf{P}_{g}[y_{1}, \cdots, y_{n}]=-\int_{\mathbb{M}}\ln g\mathrm{d}G_{n}.
+\end{equation}
+It is well-known that the the measured data will be accessed through the data fidelity functional. The minimum values of (\ref{24}) and
+(\ref{25}) has no importance and need to subtract $\mathcal{S}_{0}(G_{n}, g^{\dagger})$. By taking expectation for the
+negative log-likelihood data fidelity terms (\ref{24}) and (\ref{25}) with the distance from $\mathcal{S}_{0}(G_{n}, g^{\dagger})$, we have
+\begin{equation}\label{26}
+\mathbf{E}\left[\mathcal{S}_{0}(G_{n}, g)-\mathcal{S}_{0}(G_{n}, g^{\dagger})\right]=\int_{\mathbb{M}}
+\left[g-g^{\dagger}+g^{\dagger}\ln \left(\frac{g^{\dagger}}{g}\right)\right]\mathrm{d}x,
+\end{equation}
+the right hand side of (\ref{26}) is known as Kullback-Leibler divergence with $0\ln 0=0$ and $\ln (x)=\infty$ for $x\leq 0$ and
+$\mathrm{KL}(g, g^{\dagger})$ is a strictly convex and lower-semicontinuous functional on $\mathbf{L}^{1}(\mathbb{M})$.
+Note that Kullback-Leibler divergence $\mathrm{KL}(g, g^{\dagger})\geq 0$ for all $g$ and $\mathrm{KL}(g, g^{\dagger})=0$
+if and only if $g=g^{\dagger}$. Now we can bound the error between the ideal and estimated data fidelity functionals by
+\begin{eqnarray}\label{27}
+\mathbf{err}(g)&:=\mathcal{S}_{\delta}(G_{n}, g)-\mathcal{S}_{\delta}(G_{n}, g^{\dagger})-\mathrm{KL}(g, g^{\dagger})\nonumber\\
+&=\cases{\int_{\mathbb{M}}\ln\left(\frac{g}{g^{\dagger}}\right)(\mathrm{d}G_{n}-g^{\dagger}\mathrm{d}x)
+& if $g \ge -\frac{\delta}{2}~ a.e.$\\
+\infty, & else,\\}
+\end{eqnarray}
+which is called \textit{effective noise level}, see \cite{Hohage2016}. As for error bounds of Gaussian and impulsive noise, we refer to 
+\cite{Hohage2014, Weidling2018}. 
+
+It can be seen from the error term (\ref{27}) that the distance measures in $L^{1}(\mathbb{M})$ corresponds to the both negative
+log-likelihood described in (\ref{24}) and (\ref{25}). Since $|\ln(g/g^{\dagger})|$ is not uniformly bounded at the point $0$
+for some $f\in \mathcal{B}$ and the concentration inequality or deviation inequality can not be shown. Therefore,
+we recommend a modified parameter $\delta>0$ for the data fidelity term $\mathcal{S}_{\delta}
+(G_{n}, g)$ such that
+\begin{align}\label{28}
+\mathcal{S}_{\delta}(G_{n}, g):=\cases{\int_{\mathbb{M}}g\mathrm{d}x-\int_{\mathbb{M}}\ln(g+\delta)
+(\mathrm{d}G_{n}+\delta\mathrm{d}x) & if $g \ge -\frac{\delta}{2}~ a.e.$,\\
+\infty, & else\\}
+\end{align}
+and
+\begin{equation*}
+ \mathcal{T}_{\delta}(g^{\dagger}, g):= \cases{\mathrm{KL}(g^{\dagger}+\delta, g+\delta), & if $g \ge -\frac{\delta}{2}~ a.e.$,\\
+\infty, & else.\\}
+\end{equation*}
+Therefore, the error term (\ref{27}) now can be written as 
+\begin{align}\label{29}
+\mathbf{err}(g)&:=\mathcal{S}_{\delta}(G_{n}, g)-\mathcal{S}_{\delta}(G_{n}, g^{\dagger})-\mathrm{KL}(g+\delta, g^{\dagger}+\delta)\nonumber\\
+&=\cases{\int_{\mathbb{M}}\ln\left(\frac{g+\delta}{g^{\dagger}+\delta}\right)(\mathrm{d}G_{n}-g^{\dagger}\mathrm{d}x)
+& if $g \ge -\frac{\delta}{2}~ a.e.$,\\
+\infty, & else.\\}
+\end{align}
+
+
+In general, the modified noise error (\ref{29}) can be bounded with high probability by using a concentration inequality derived by Reynaud-Bouret
+\cite{ReynaudBouret2003} if we get $\|\ln\left(\frac{g+\delta}{g^{\dagger}+\delta}\right)\|_{\infty}<\infty$ under some proper assumptions. 
+Hohage et al \cite{Dunker2014, Werner2012} bounded the log-function in Sobolev ball and derived concentration inequalities for $\mathbf{err}
+(g)$. However, this convergence analysis cannot yield optimal rates, which we will state convergence results for variational regularization
+in the following theorem.
+
+\begin{theorem}\label{Theorem-4.2} 
+Suppose that Assumption \ref{assumption-4.1} and (H6)-(H7) from \cite{Hohage2016} hold true with the $B_{2,1}^{u}(\mathbb{M})$-norm topology 
+for $u>\frac{d}{2}>0$ and if the Tikhonov functional (\ref{2}) has a global minimizer $\widehat{f}_{\alpha}$, then we obtain
+\begin{equation}\label{30}
+\left\|\widehat{f}_{\alpha}-f^{\dagger}\right\|_{\mathbb{X}}^{2}\leq \frac{2\mathbf{err}(F(\widehat{f}_{\alpha}))}{\alpha}
++2\Psi\left(\alpha\right)
+\end{equation}
+and
+\begin{equation}\label{31}
+\mathcal{T}_{\delta}(g^{\dagger}, F(\widehat{f}_{\alpha}))\leq 2\mathbf{err}(F(\widehat{f}_{\alpha}))+2\alpha\Psi(2\alpha) 
+\end{equation}
+for all $\alpha>0$. Moreover $F(\mathcal{B})$ is bounded with respect to $B_{2, 2}^{s}(\mathbb{M})$-norm for $s>d/2$
+if and only if $\alpha=\alpha(n)$ is chosen such that
+\begin{equation*}
+-\frac{1}{\alpha}\in \partial (-\Phi)\left(\frac{1}{\sqrt{n}}\right)
+\end{equation*}
+as $n\rightarrow\infty$, we obtain the following convergence rate
+\begin{equation}\label{32}
+\mathbf{E}\left[\left\|\widehat{f}_{\alpha}-f^{\dagger}\right\|_{\mathbb{X}}^{2}\right]
+=O\left(\Phi\left(\frac{1}{\sqrt{n}}\right)\right)
+\end{equation}
+as $n\rightarrow\infty$. 
+\end{theorem}
+
+Theorem \ref{Theorem-4.2} can be seen as a particular case of Theorem 4.11 in Hohage and Werner \cite{Hohage2016}
+for Tikhonov-type regularization (\ref{2}), where they derive convergence rates in terms of Bregman distance instead of quadratic 
+distance norms. Unfortunately, these convergence results for variational regularization methods are not order optimal rates for Poisson and 
+empirical process data. Due to the variational source condition, the convergence result in Theorem \ref{Theorem-4.2} that the smoothness of the 
+true solution $f^{\dagger}$ is characterized by an index function $\Phi$, in which case they could derive suboptimal rates in terms of the index
+function $\Phi$ and smoothing properties of the operator $F$. If $\mathbb{X}$ is a 2-convex Banach space and 
+$\mathcal{R}(f)=\frac{1}{2}\|f\|_{\mathbb{X}}^{2}$, then it follows from the inequalities in Xu and Roach (\cite{Xu1991}) or 
+Sprung \cite{Sprung2019} that
+\begin{equation*}
+\|f-f^{\dagger}\|_{\mathbb{X}}\leq C_{bd}\mathcal{D}(f, f^{\dagger})^{\frac{1}{2}}
+\end{equation*}
+holds true for all $f\in\mathbb{X}$ with some constant $C_{bd}>0$. This inequality also holds true for general penalty functional such as 
+maximum entropy and sparsity functionals. 
+
+Recently, Weidling et al \cite{Weidling2018} showed for the verification of variational source conditions for the mildly ill-posed problems under some smoothness conditions, these approach are 
+currently applied many other interesting inverse problems, e.g., \cite{Hohage2017, Hohage2019, Weidling2017}. Under this result, we can formulate the index function with an explicit power, see Theorem 4.1 in \cite{Weidling2018}. The following lemma will describe the specific formula of a variational source condition.
+
+\begin{lemma}\label{Lemma-4.3}
+Let Assumption \ref{assumption-4.1} is satisfied and $f^{\dagger}\in B_{2,\infty}^{\tau}(\mathbb{M})$ for some $\tau\in (0, u)$ with
+$\|f^{\dagger}\|_{B_{2, \infty}^{\tau}}\leq \varrho$. Then there exists a constant $c>0$ such that the solution $f^{\dagger}$ satisfies
+the variational source conditions (\ref{33}) with 
+\begin{equation*}
+\Phi(\alpha)=c\varrho^{\frac{2u}{u+\tau}}\alpha^{\frac{\tau}{\tau+u}}.
+\end{equation*}
+Moreover, $\Psi$ is given by
+\begin{equation}\label{33}
+\Psi(\alpha)=c\varrho^{2}\alpha^{\frac{\tau}{u}}.
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+The proof of the first argument follows from Theorem 4.1 in \cite{Weidling2018}. Now we need to calculate the Fenchel conjugate of $\Phi$.
+By Fenchel formula, we have
+\begin{equation}\label{34}
+\Psi(\gamma)=\sup_{\alpha>0}\left[c\varrho^{\frac{2u}{u+\tau}}\alpha^{\frac{\tau}{\tau+u}}-\frac{\alpha}{\gamma}\right].
+\end{equation}
+Since the first order $\Psi'(\bar{\alpha})=0$, we derive 
+\begin{equation*}
+\bar{\alpha}=\left(\frac{\tau+u}{u}\right)^{\frac{\tau+u}{\tau}}c^{-\frac{\tau+u}{\tau}}\varrho^{-2}\gamma^{-\frac{\tau+u}{u}}.
+\end{equation*}
+Then by inserting this into (\ref{34}) we obtain (\ref{33}).
+\end{proof}
+
+\begin{remark}\label{Remark-4.4}
+Under the assumptions of Lemma \ref{Lemma-4.3} and with parameter choice 
+\begin{equation*}
+\alpha \sim (n\varrho^{4})^{-\frac{u}{2\tau+2u}},
+\end{equation*}
+we can write the convergence rate (\ref{33}) more explicit form as follows
+\begin{equation}\label{35}
+\mathbf{E}\left[\left\|\widehat{f}_{\alpha}-f^{\dagger}\right\|_{\mathbb{X}}^{2}\right]
+=O\left(\varrho^{\frac{4u}{2\tau+2u}}\left(\frac{1}{n}\right)^{\frac{\tau}{2\tau+2u}}\right),
+\end{equation}
+as $n\rightarrow \infty$. However, the exponent $\frac{\tau}{2\tau+2u}$ is strictly smaller than the optimal rate with exponent 
+$\frac{2\tau}{2\tau+2u+d}$ if and only if $d/2<\tau+u$, which is always the case under our assumption $u>d/2$. Therefore, this order
+(\ref{35}) is not satisfied the order optimality of convergence rates for mildly ill-posed inverse problems.
+\end{remark}
+
+
+\subsection{Improved convergence rates for Poisson and empirical process data}\label{Sec-4.2}
+\allowdisplaybreaks
+\hspace{0.5cm}
+In section \ref{Sec-4.1} we recalled the known convergence rate results for variational regularization methods of nonlinear ill-posed inverse problems with Poisson and empirical process data, which 
+have been intensively studied in many other papers \cite{Dunker2014, Hofmann2007, Hohage2013, Hohage2016, Werner2012}. However, the convergence results of
+Theorem 4.11 in \cite{Hohage2016} for Poisson data or Theorem 4.6 in \cite{Dunker2014} for data given by empirical processes are shown to be not 
+optimal in expectation. In this subsection we will further study a convergence analysis of the estimator (\ref{2}) and improve
+the reconstruction error bounds in expectation in terms of some noise level for the variational regularization method 
+with Poisson and empirical process data. To derive a better convergence rate for these data, we first need to bound the noise error $\mathbf{err}$ and we have to show some technical lemmas of composition operators.
+
+\begin{lemma}\label{Lemma-4.5}
+Let $\mathbb{M}\subset\mathbb{R}^{d}$ be a bounded Lipschitz domain. Suppose that $g\in H_{2}^{s}(\mathbb{M})$ with $s\geq \frac{d}{2}$ and $g\geq a>0$, then $\ln(g)\in H_{2}^{s}(\mathbb{M})$ and $g^{-1}\in H_{2}^{s}(\mathbb{M})$. Moreover, there exists a constant $\tilde{C}>0$ such that
+\begin{equation}\label{36}
+\left\|\ln (g)\right\|_{H_{2}^{s}(\mathbb{M})}\leq \tilde{C} \left\|g-1\right\|_{H_{2}^{s}(\mathbb{M})}
+\end{equation}
+holds trues for $\|g-1\|_{H_{2}^{s}(\mathbb{M})}\leq R$ with $R>0$.
+Moreover, 
+\begin{equation}\label{37}
+\left\|\frac{1}{g}\right\|_{H_{2}^{s}(\mathbb{M})}\leq \tilde{C}\left(\frac{1}{a}\|\mathbf{1}\|_{H_{2}^{s}(\mathbb{M})}+
+\|g-a\|_{H_{2}^{s}(\mathbb{M})}\right)
+\end{equation}
+for all $g\geq a$ with $\|g\|_{H_{2}^{s}(\mathbb{M})}\leq R$, where $\mathbf{1}$ denotes the constant function with value $1$.
+\end{lemma}
+
+\begin{proof}
+Set $v:=g-1$ and define a composition operator $T_{H}(v)=H\circ v$ on Sobolev spaces $H_{2}^{s}(\mathbb{M})$ associated with a function 
+$H: \mathbb{R}\rightarrow \mathbb{R}$ given by $H(x)=\ln (x+1)$ for $x\in[a+1, \infty)$. Then (\ref{36}) is equivalent to
+\begin{equation}\label{38}
+\left\|H\circ v\right\|_{H_{2}^{s}(\mathbb{R}^{d})}\leq \widetilde{C} \|v\|_{H_{2}^{s}(\mathbb{R}^{d})}
+\end{equation}
+for all $v\in H_{2}^{s}(\mathbb{M})$ satisfying $v+1\in [a, \infty)$ and $\|v\|_{H_{2}^{s}(\mathbb{R}^{d})}<R$. 
+The function $H$ can be extended from the interval $[a-1, \infty)$ to a function in $C^{m+1}(\mathbb{R})$ and $H(0)=0$.  Hence, by applying Theorem A in Adams and Frazier \cite{Adams1992} to 
+the cases $H\circ v$, we have
+\begin{align}\label{39}
+\|H\circ v\|_{H_{2}^{s}(\mathbb{R}^{d})}\leq c\|H\|_{C^{m+1}}\left(\|v\|_{H_{2}^{s}(\mathbb{R}^{d})}+
+\|v\|_{H_{2}^{s}(\mathbb{R}^{d})}^{\tilde{s}}\right)
+\end{align}
+for all $v\in H_{2}^{s}(\mathbb{R}^{d})$ with $\tilde{s}=\max(1, s)$ and for $c>0$. Then the inequality (\ref{39}) shows (\ref{38}) with constant $\tilde{C}:=
+:c\|H\|_{C^{m+1}}(1+R^{\tilde{s}-1})$. In the case $\mathbb{M}\neq \mathbb{R}^{d}$, we use that $H_{2}^{s}(\mathbb{M})=\{f|_{\mathbb{M}}: ~
+f\in H_{2}^{s}(\mathbb{R}^{d})\}$ with norm by the infimum over $\|f\|_{H_{2}^{s}(\mathbb{R}^{d})}$. As $(H\circ v)|_{\mathbb{M}}
+=H\circ v|_{\mathbb{M}}$, then we obtain the assertion for general $\mathbb{M}$. 
+
+Similarly, to show the second argument let $H(x)=\frac{1}{x+a}-\frac{1}{a}$ for $a>0$ and then the function $H: \mathbb{R}\rightarrow \mathbb{R}$ such that $H(0)=0$. Hence, by applying  Theorem A 
+in Adams and Frazier \cite{Adams1992} once again, we derive (\ref{37}).
+\end{proof}
+
+
+\begin{assumption}[{\bf Smoothing and Lipschitz properties}]\label{Assumption-4.6}
+Let $\mathbb{M}\subset\mathbb{R}^{d}$ be a bounded Lipschitz domain. Let $F: \mathcal{B}\subset\mathbb{X}\rightarrow B_{2, 2}^{u}$ be
+Lipschitz continuous for some $u>d/2>0$, i.e., 
+\begin{equation*}
+\frac{1}{L}\|f_{1}-f_{2}\|_{\mathbb{X}}\leq\|F(f_{1})-F(f_{2})\|_{B_{2, 2}^{u}(\mathbb{M})}\leq L\|f_{1}-f_{2}\|_{\mathbb{X}}
+\end{equation*}
+for all $f_{1}, f_{2}\in\mathcal{B}$ and for some Lipschitz constant $L>0$. 
+\end{assumption}
+
+It is necessary to emphasize that the smoothness assumption implies the boundedness of $F$ from $\mathbb{X}$ to Besov space
+$B_{2, 2}^{s}(\mathbb{M})$ if $F:\mathbb{X}\rightarrow B_{2, 2}^{s}(\mathbb{M})$ is linear and $\mathbb{X}$ is a Hilbert space 
+and the penalty term is quadratic. 
+
+\begin{proposition}\label{Proposition-4.7}
+Suppose that Assumption \ref{Assumption-4.6} holds true and $F(f)\geq 0$ for all $f\in\mathcal{B}\subset\mathbb{X}$ and $F(\mathcal{B})$ is
+bounded in $B_{2,2}^{s}(\mathbb{M})$ such that $\sup_{f\in\mathcal{B}}\|F(f)\|_{B_{2,2}^{s}(\mathbb{M})}<\infty$ with some $s\in[d/2, u)$. 
+Moreover, let $\widehat{f}_{\alpha}$ be a minimizer of Tikhonov functional (\ref{2}), then there exists a constant $\widetilde{C}_{con}>0$ such that
+\begin{equation}\label{40}
+\left\|\ln\left(\frac{F(\widehat{f}_{\alpha})+\delta}{g^{\dagger}+\delta}\right)\right\|_{B_{2,1}^{s}(\mathbb{M})} 
+\leq \widetilde{C}_{con}\|\widehat{f}_{\alpha}-f^{\dagger}\|_{\mathbb{X}}^{\frac{s}{2u}}\mathcal{T}_{\delta}
+(F(\widehat{f}_{\alpha}), g^{\dagger})^{\frac{u-s}{2u}}
+\end{equation}
+for all $g=F(\widehat{f}_{\alpha})\in B_{2, 1}^{s}(\mathbb{M})$.
+\end{proposition}
+
+\begin{proof}
+To bound the logarithmic function in (\ref{42}), we  will first use the interpolation inequality in Besov spaces with the domain $\mathbb{M}$. By Theorem 1.33 in Triebel \cite{Triebel2008}, we have
+\begin{align}\label{41}
+ \left\|\ln\left(\frac{F(\widehat{f}_{\alpha})+\delta}{g^{\dagger}+\delta}\right)\right\|_{B_{2,1}^{s}(\mathbb{M})} \leq C_{1}
+ \left\|\ln\left(\frac{F(\widehat{f}_{\alpha})+\delta}{g^{\dagger}+\delta}\right)\right\|_{B_{2,2}^{u}(\mathbb{M})}^{\frac{u}{s}}
+ \left\|\ln\left(\frac{F(\widehat{f}_{\alpha})+\delta}{g^{\dagger}+\delta}\right)\right\|_{B_{2,2}^{0}(\mathbb{M})}^{1-\frac{u}{s}}
+ \end{align}
+for some constant $C_{1}>0$ and $u>s>0$.
+Note that $B_{2,2}^{u}(\mathbb{M})=H_{2}^{u}(\mathbb{M})$ and $B_{2,2}^{0}(\mathbb{M})=L^{2}(\mathbb{M})$ for the smoothness $u>s>0$.
+As a consequence of Lemma \ref{Lemma-4.5} and by Theorem 2.8.3 in Triebel \cite{Triebel1983} for the bounded Lipschitz domain $\mathbb{M}\subset\mathbb{R}^{d}$, 
+ the first factor on the right hand side of (\ref{41}) can be bounded by
+\begin{align}\label{42}
+ \left\|\ln\left(\frac{F(\widehat{f}_{\alpha})+\delta}{g^{\dagger}+\delta}\right)\right\|_{B_{2,2}^{u}(\mathbb{M})} 
+&\leq C_{2}\left(\frac{2(\|g^{\dagger}\|_{L^{\infty}}+\delta)}{\delta}\right)^{m}\left\|\frac{F(\widehat{f}_{\alpha})-g^{\dagger}}{g^{\dagger}+\delta}\right\|_{B_{2,2}^{u}(\mathbb{M})}\nonumber\\
+&\leq C_{2}\left(\frac{2(\|g^{\dagger}\|_{L^{\infty}}+\delta)}{\delta}\right)^{m}\left\|\frac{1}{g^{\dagger}+\delta}\right\|_{B_{2,2}^{u}(\mathbb{M})}
+\left\|F(\widehat{f}_{\alpha})-g^{\dagger}\right\|_{B_{2,2}^{u}(\mathbb{M})}
+\end{align}
+with some constant $C_{2}>0$, 
+where we used the inequality $\frac{g+\delta}{g^{\dagger}+\delta}\geq \frac{\delta}{2(\|g^{\dagger}\|_{L^{\infty}}+\delta)}$ for small $\delta\leq 1$. 
+The second factor on the right hand side of (\ref{42}) be bounded based on the result (\ref{37})  from Lemma \ref{Lemma-4.5}. Moreover, by Assumption \ref{Assumption-4.6}, we have
+\begin{equation}\label{43}
+\|F(\widehat{f}_{\alpha})-g^{\dagger}\|_{B_{2,2}^{u}(\mathbb{M})}\leq L \|\widehat{f}_{\alpha}-f^{\dagger}\|_{\mathbb{X}}
+\end{equation}
+for Lipschitz constant $L>0$. From the inequality (\ref{42}) and  (\ref{43}) we have
+\begin{equation}\label{44}
+ \left\|\ln\left(\frac{F(\widehat{f}_{\alpha})+\delta}{g^{\dagger}+\delta}\right)\right\|_{B_{2,2}^{u}(\mathbb{M})} \leq C_{\delta, g^{\dagger}, L}\left\|\widehat{f}_{\alpha})-f^{\dagger}\right\|_{\mathbb{X}}
+  \end{equation}
+holds true for some constant $C_{\delta, g^{\dagger}, L}>0$, which depends on $g^{\dagger}, \delta>0$ and Lipschitz constant $L>0$.  
+
+Now we will further bound the second factor on the right hand side of (\ref{40}). Similarly, with the help of
+Lemma \ref{Lemma-4.5} we have
+\begin{align}\label{45}
+ \left\|\ln\left(\frac{F(\widehat{f}_{\alpha})+\delta}{g^{\dagger}+\delta}\right)\right\|_{B_{2,2}^{0}(\mathbb{M})} &\leq 
+ \frac{2(\|g^{\dagger}\|_{L^{\infty}}+\delta)}{\delta}\left\|\frac{F(\widehat{f}_{\alpha})+\delta}{g^{\dagger}+\delta}-1\right\|_{L^{2}(\mathbb{M})}\nonumber\\
+ &\leq  \frac{2(\|g^{\dagger}\|_{L^{\infty}}+\delta)}{\delta}\left\|\frac{1}{g^{\dagger}+\delta}\right\|_{L^{\infty}(\mathbb{M})}\left\|F(\widehat{f}_{\alpha})-g^{\dagger}\right\|_{L^{2}(\mathbb{M})}\nonumber\\
+ &=C_{\delta, g^{\dagger}} \left\|F(\widehat{f}_{\alpha})-g^{\dagger}\right\|_{L^{2}(\mathbb{M})}
+  \end{align}
+ for some constant $C_{\delta, g^{\dagger}}=\frac{2(\|g^{\dagger}\|_{L^{\infty}}+\delta)}{\delta}\left\|\frac{1}{g^{\dagger}+\delta}\right\|_{L^{\infty}(\mathbb{M})}>0$ depending on $\delta$ and $g^{\dagger}$, 
+where $\|g^{\dagger}\|_{L^{\infty}}$ can be seen as a constant function. Then by applying Lemma 2.6 \cite{Hohage2016} for the norm $\|F(\widehat{f}_{\alpha})-g^{\dagger}\|_{L^{2}(\mathbb{M})}$, we obtain
+\begin{align}\label{46}
+\fl \|F(\widehat{f}_{\alpha})-g^{\dagger}\|_{L^{2}(\mathbb{M})}\leq \left(\frac{3}{2}\|g^{\dagger}\|_{L^{\infty}(\mathbb{M})}
++\frac{4}{3}\|F(\widehat{f}_{\alpha})\|_{L^{\infty}(\mathbb{M})}+2\delta)\right)^{\frac{1}{2}}\mathcal{T}_{\delta}
+(F(\widehat{f}_{\alpha}), g^{\dagger})^{\frac{1}{2}},
+\end{align}
+where $\|F(\widehat{f}_{\alpha})\|_{L^{\infty}(\mathbb{M})}$ is bounded due to the fact that $\sup_{f\in\mathcal{B}}
+\|F(\widehat{f}_{\alpha})\|_{B_{2,2}^{s}(\mathbb{M})}$ is bounded with some $s\in[\frac{d}{2}, u)$. Thus the first factor can be seen as
+a constant function which we denote by
+\begin{equation*}
+C_{3}=\left(\frac{3}{2}\|g^{\dagger}\|_{L^{\infty}(\mathbb{M})}
++\frac{4}{3}\|F(\widehat{f}_{\alpha})\|_{L^{\infty}(\mathbb{M})}+2\delta)\right)^{\frac{1}{2}}>0.
+\end{equation*}
+Therefore (\ref{46}) is further bounded by
+\begin{equation}\label{47}
+\|F(\widehat{f}_{\alpha})-g^{\dagger}\|_{L^{2}(\mathbb{M})}\leq C_{3}\mathcal{T}_{\delta}(F(\widehat{f}_{\alpha}), g^{\dagger})^{\frac{1}{2}}.
+\end{equation}
+By plugging (\ref{47}) into (\ref{45}) we have
+\begin{align}\label{48}
+ \left\|\ln\left(\frac{F(\widehat{f}_{\alpha})+\delta}{g^{\dagger}+\delta}\right)\right\|_{B_{2,2}^{0}(\mathbb{M})}\leq C_{\delta, g^{\dagger}, C_{3}}
+  \mathcal{T}_{\delta}(F(\widehat{f}_{\alpha}), g^{\dagger})^{\frac{1}{2}}.
+   \end{align}
+Finally, by inserting (\ref{44}) and (\ref{48}) into (\ref{41}) we obtain
+\begin{align*}
+\left\|\ln\left(\frac{F(\widehat{f}_{\alpha})+\delta}{g^{\dagger}+\delta}\right)\right\|_{B_{2,1}^{s}(\mathbb{M})} 
+&\leq C_{1}C_{2}C_{\delta, g^{\dagger}, L}C_{\delta, g^{\dagger}, C_{3}}\|\widehat{f}_{\alpha}-f^{\dagger}\|_{\mathbb{X}}^{\frac{s}{u}}\mathcal{T}_{\delta}(F(\widehat{f}_{\alpha}),
+g^{\dagger})^{\frac{u-s}{2u}}.
+\end{align*}
+Setting $\widetilde{C}_{con}:=C_{1}C_{2}C_{\delta, g^{\dagger}, L}C_{\delta, g^{\dagger}, C_{3}}>0$, which yields the assertion. 
+\end{proof}
+
+
+\begin{theorem}\label{Theorem-4.8}
+Let the assumptions of Proposition \ref{Proposition-4.7} are satisfied and Assumption \ref{assumption-4.1} holds true. 
+Let $\widehat{f}_{\alpha}$ be a minimizer of (\ref{2}). Then there exists some constant
+$\widetilde{C}_{con}>0$ such that
+\begin{equation}\label{49}
+\mathbf{err}(F(\widehat{f}_{\alpha}))\leq 2^{\frac{s}{u}}\widetilde{C}_{con}^{2}\alpha^{-\frac{s}{u}}
+\left\|G_{n}-g^{\dagger}\right\|_{B_{2,\infty}^{-s}}^{2}
++\alpha\Psi(2\alpha)
+\end{equation}
+and 
+\begin{equation}\label{50}
+\left\|\widehat{f}_{\alpha}-f^{\dagger}\right\|_{\mathbb{X}}^{2}\leq 2^{\frac{s}{u}}\widetilde{C}_{con}^{2}\alpha^{-1-\frac{s}{u}}
+\left\|G_{n}-g^{\dagger}\right\|_{B_{2,\infty}^{-s}}^{2}+\Psi(2\alpha)
+\end{equation}
+for all $\alpha>0$ and for $s\geq\frac{d}{2}$. 
+\end{theorem}
+
+\begin{proof}
+By using H\"{o}lder's inequality and Theorem 2.6.1 in Triebel \cite{Triebel1978} and Proposition \ref{Proposition-4.7}, 
+we bound the error term (\ref{29}) by
+\begin{align}\label{51}
+\mathbf{err}(F(\widehat{f}_{\alpha}))&=\left|\int_{\mathbb{M}}\ln\left(\frac{F(\widehat{f}_{\alpha})+\delta}{g^{\dagger}+\delta}\right)
+\left(\mathrm{d}G_{n}-g^{\dagger}\mathrm{d}x\right)\right|\nonumber\\
+&\leq \|G_{n}-g^{\dagger}\|_{B_{2, \infty}^{-s}(\mathbb{M})}\left\|\ln\left(\frac{F(\widehat{f}_{\alpha})+\delta}
+{g^{\dagger}+\delta}\right)\right\|_{B_{2,1}^{s}(\mathbb{M})}\nonumber\\
+&\leq \widetilde{C}_{con}\|G_{n}-g^{\dagger}\|_{B_{2, \infty}^{-s}(\mathbb{M})}
+\|\widehat{f}_{\alpha}-f^{\dagger}\|_{\mathbb{X}}^{\frac{s}{u}}
+\mathcal{T}_{\delta}(F(\widehat{f}_{\alpha}), g^{\dagger})^{\frac{u-s}{2u}},
+\end{align}
+where we define
+\begin{equation*}
+\|G_{n}-g^{\dagger}\|_{B_{2, \infty}^{-s}(\mathbb{M})}:=\sup_{\|\mathfrak{f}\|_{B_{2,1}^{s}(\mathbb{M})}\leq 1}
+\left|\int_{\mathbb{M}}\mathfrak{f}(x)(\mathrm{d}G_{n}-g^{\dagger}\mathrm{d}x)\right|
+\end{equation*}
+and $B_{2,\infty}^{-s}(\mathbb{M})$ is a dual space of $B_{2,1}^{s}(\mathbb{M})$. By monotonicity of $\Psi$ and (\ref{31}), we have
+\begin{equation}\label{52}
+\frac{1}{2}\|\widehat{f}_{\alpha}-f^{\dagger}\|_{\mathbb{X}}^{2}\leq \frac{\mathbf{err}(F(\widehat{f}_{\alpha}))}
+{\alpha}+\Psi(\alpha)\leq \frac{1}{\alpha}\left(\mathbf{err}(F(\widehat{f}_{\alpha}))+\alpha\Psi(2\alpha)\right).
+\end{equation}
+By plugging the deterministic error bound (\ref{30}) in Theorem 4.2 and (\ref{52}) into (\ref{51}) and using Young's inequality 
+$xy\leq \frac{1}{p}x^{p}+\frac{1}{q}y^{q}$ for all $x, y>0$ and $p, q>0$ satisfies $\frac{1}{p}+\frac{1}{q}=1$, 
+the noise error (\ref{51}) is again bounded by
+\allowdisplaybreaks
+\begin{align}\label{53}
+\mathbf{err}(F(\widehat{f}_{\alpha}))&\leq\widetilde{C}_{con}\|\widehat{f}_{\alpha}-f^{\dagger}\|_{\mathbb{X}}^{\frac{s}{u}}
+\mathcal{T}_{\delta}(F(\widehat{f}_{\alpha}), g^{\dagger})^{\frac{u-s}{2u}}\|G_{n}-g^{\dagger}\|_{B_{2, \infty}^{-s}}\nonumber\\
+&\leq\widetilde{C}_{con}2^{\frac{s}{2u}}(2\alpha)^{\frac{u-s}{2u}}\left(\frac{\mathbf{err}(F(\widehat{f}_{\alpha}))}{\alpha}+
+\Psi(2\alpha)\right)^{\frac{1}{2}}\left\|G_{n}-g^{\dagger}\right\|_{B_{2,\infty}^{-s}}\nonumber\\
+&\leq \widetilde{C}_{con}2^{\frac{s}{2u}}
+(2\alpha)^{\frac{u-s}{2u}}\left(\frac{\mathbf{err}(F(\widehat{f}_{\alpha}))}{\alpha}\right)^{\frac{1}{2}}
+\left\|G_{n}-g^{\dagger}\right\|_{B_{2,\infty}^{-s}}\nonumber\\
+&\quad+\widetilde{C}_{con}2^{\frac{s}{2u}}\alpha^{\frac{u-s}{2u}}\Psi(2\alpha)^{\frac{1}{2}}
+\left\|G_{n}-g^{\dagger}\right\|_{B_{2,\infty}^{-s}}\nonumber\\
+&\leq \frac{1}{2}\mathbf{err}(F(\widehat{f}_{\alpha}))+\frac{\alpha}{2}\Psi(2\alpha)
++\frac{1}{2}2^{\frac{s}{u}}\alpha^{\frac{u-s}{u}}\left(\frac{\widetilde{C}_{con}}{\sqrt{\alpha}}\right)^{2}\left\|G_{n}-
+g^{\dagger}\right\|_{B_{2,\infty}^{-s}}^{2}\nonumber\\
+&\quad+\frac{1}{2}2^{\frac{s}{u}}\alpha^{\frac{u-s}{u}}\left(\frac{\widetilde{C}_{con}}{\sqrt{\alpha}}\right)^{2}\left\|G_{n}-
+g^{\dagger}\right\|_{B_{2,\infty}^{-s}}^{2},
+\end{align}
+by subtracting $\frac{1}{2}\mathbf{err}(F(\widehat{f}_{\alpha}))$ on the both side of the inequality (\ref{53}), we obtain
+\begin{equation*}
+\mathbf{err}(F(\widehat{f}_{\alpha}))\leq 2^{\frac{s}{u}}\widetilde{C}_{con}^{2}\alpha^{-\frac{s}{u}}
+\left\|G_{n}-g^{\dagger}\right\|_{B_{2,\infty}^{-s}}^{2}+\alpha\Psi(2\alpha).\nonumber
+\end{equation*}
+Finally, by inserting this inequality into (\ref{49}), we derive (\ref{50}).
+\end{proof}
+
+\begin{remark}\label{Remark-4.9}
+\begin{enumerate}
+\item Similarly, we can also obtain the optimal bound for the discrete type of Poisson and empirical noise as in Theorem \ref{Theorem-4.8}. 
+In discrete setting, the observed quatities will be discrete measurement $\mathbf{g}^{\text{obs}}\in\mathbb{N}^{J}$ in practice.
+If the measurement manifold $\mathbb{M}=\bigcup_{j=1}^{J}\mathbb{M}_{j}$ with $|\mathbb{M}_{j}|>0$ for all $j\in J$, 
+then the discrete measurements are given by $\mathbf{g}^{\text{obs}}=G_{n}(\mathbb{M}_{j})$ and $\mathbf{g}^{\dagger}
+=\int_{\mathbb{M}_{j}}g^{\dagger}\mathrm{d}x$. Thus, the effective noise level is given by
+\begin{equation*}
+\mathbf{err}_{J}(\mathbf{g}):=\left|\sum_{j=1}^{J}\ln \left(\frac{\mathbf{g}+\delta}{\mathbf{g}^{\dagger}+\delta}\right)
+(\mathbf{g}^{\text{obs}}-\mathbf{g}^{\dagger})\right|
+\end{equation*}
+for all $\mathbf{g}\in\mathbb{N}^{J}$ and shift parameter $\delta>0$, see the more detail about the discretized case in \cite{Hohage2013}. 
+
+\item Obviously, it is possible to extend the the error bounds (\ref{49}) and (\ref{50}) into Banach space setting. However, we only
+consider here the quadratic penalty functional, i.e., $\mathcal{R}(f)=\frac{1}{2}\|f\|_{\mathbb{X}}^{2}$. The same results also hold
+true for Banach spaces with the norm powers $\mathcal{R}(f)=\frac{1}{q}\|f\|_{\mathbb{X}}^{q}$ for $q>2$.
+\end{enumerate}
+\end{remark}
+
+\begin{theorem}\label{Theorem-4.10}
+Let $F: \mathcal{B}\subset L^{2}(\mathbb{M})\rightarrow B_{2,1}^{u}(\mathbb{M})$ be a continuous operator and $F(f)\geq 0$ for all $f\in\mathcal{B}$.
+Assume that $F(\mathcal{B})$ is bounded in $B_{2,1}^{s}(\mathbb{M})$ and $\sup_{f\in \mathcal{B}}\|F(f)\|_{B_{2,1}^{s}(\mathbb{M})}<\infty$ with
+some $s\in[d/2, u)$. Suppose that Assumptions \ref{assumption-4.1} and \ref{Assumption-4.6} hold true with the norm topology for index 
+$u>\frac{d}{2}>0$ and let $\widehat{f}_{\alpha}$ be a global minimizer. Moreover, set $\tau\in (0, u)$ and $\tilde{d}\geq d$. Then there exist  
+some constant $C_{1}, C_{2}, C_{3}>0$ such that for all $f^{\dagger}\in B_{2, \infty}^{\tau}(\mathbb{M})$ with $\|f^{\dagger}\|_{B_{2, \tau}
+^{\tau}(\mathbb{M})}\leq \varrho$ and for the parameter choice rule
+\begin{equation*}
+\alpha^{*}=(\varrho \sqrt{n})^{-\frac{2\tau}{u+\tilde{d}/2+\tau}}
+\end{equation*}
+the error bound 
+\begin{equation}\label{54}
+\left\|\widehat{f}_{\alpha}-f^{\dagger}\right\|_{\mathbb{X}}^{2}\leq 
+C_{1}\varrho^{\frac{4\tau+2\tilde{d}}{2\tau+2a+\tilde{d}}}n^{-\frac{2\tau}{2\tau+2u+\tilde{d}}}\left(1+n\|G_{n}-
+g^{\dagger}\|_{B_{2, \infty}^{-\tilde{d}/2}(\mathbb{M})}^{2}\right)
+\end{equation}
+holds for all $n\in\mathbb{N}$. Then we obtain
+\begin{equation}\label{55}
+\mathbf{E}\left[\left\|\widehat{f}_{\alpha^{*}}-f^{\dagger}\right\|_{\mathbb{X}}^{2}\right]^{1/2}\leq C_{2}\varrho^{\frac{2\tau+\tilde{d}}
+{2\tau+2u+\tilde{d}}}n^{-\frac{\tau}{2\tau+2u+\tilde{d}}}
+\end{equation}
+as $n\rightarrow\infty$. Moreover, if Conjecture \ref{Conjecture-3.3} holds true with $\tilde{d}=d$,
+then we obtain the following convergence rate
+\begin{equation}\label{56}
+\mathbf{E}\left[\left\|\widehat{f}_{\alpha^{*}}-f^{\dagger}\right\|_{\mathbb{X}}^{2}\right]^{1/2}\leq C_{3}(\ln n)^{m}\varrho^{\frac{2\tau+2d}
+{2\tau+2u+d}}n^{-\frac{\tau}{2\tau+2u+d}}
+\end{equation}
+ as $n\rightarrow\infty$, which is order optimal if $m=0$. 
+\end{theorem}
+
+\begin{proof} 
+By combining the results of Lemma \ref{Lemma-4.3} and Theorem \ref{Theorem-4.8}, we have
+\begin{equation*}
+\left\|\widehat{f}_{\alpha}-f^{\dagger}\right\|_{\mathbb{X}}^{2}\leq 2^{\frac{s}{u}}\widetilde{C}_{con}^{2}\alpha^{-1-\frac{s}{u}}
+\|G_{n}-g^{\dagger}\|_{B_{2, \infty}^{-\tilde{d}/2}(\mathbb{M})}+c\varrho^{2}\alpha^{\frac{\tau}{u}}.
+\end{equation*}
+The parameter choice $\alpha \sim \varrho^{-\frac{2u}{2u+2\tau+\tilde{d}/2}}n^{-\frac{u}{u+\tilde{d}/2+\tau}}$ with 
+$s=\tilde{d}/2>0$ gives the following error bound
+\begin{equation}\label{57}
+\left\|\widehat{f}_{\alpha}-f^{\dagger}\right\|_{\mathbb{X}}^{2}\leq 
+C_{1}\varrho^{\frac{4\tau+2\tilde{d}}{2\tau+2a+d}}n^{-\frac{2\tau}{2\tau+2u+\tilde{d}}}\left(1+n\|G_{n}-g^{\dagger}\|_{B_{2, \infty}^{-\tilde{d}/2}
+(\mathbb{M})}^{2}\right)
+\end{equation}
+for all $n\in\mathbb{N}$ and some constant $C_{1}>0$. Finally, by taking expectation on (\ref{57}) and Theorem \ref{Theorem-3.4} we find that 
+\begin{equation*}
+\sup_{n\in\mathbb{N}}\mathbf{E}\left[n\|G_{n}-g^{\dagger}\|_{B_{2, \infty}^{-\tilde{d}/2}(\mathbb{M})}^{2}\right]<\infty
+\end{equation*}
+if $\tilde{d}>d$ or if Conjecture \ref{Conjecture-3.3} holds true with $m=0$ which implies (\ref{54}) and (\ref{55}) for $m=0$.
+If $m>0$, then 
+\begin{equation*}
+\sup_{n\in\mathbb{N}}\mathbf{E}\left[\frac{n}{(\ln n)^{m}}\|G_{n}-g^{\dagger}\|_{B_{2, \infty}^{-\tilde{d}/2}(\mathbb{M})}^{2}\right]<\infty
+\end{equation*}
+and we derive (\ref{56}) for $m>0$.
+
+Similarly, by combining the deviation inequality (\ref{17}) of Theorem \ref{Theorem-3.4} for empirical process and Theorem \ref{Theorem-4.8}
+with (\ref{55}) we can also derive the same convergence rate as shown in (\ref{55}), which complete the proof of the theorem.
+\end{proof}
+
+On the one hand, the results of Theorem \ref{Theorem-4.10} show that convergence rates for variational regularization methods are close to optimal
+order compare to rates for wavelet Galerkin approximation methods studied by Antoniadis and Bigot \cite{antoniadis2006}. If our 
+conjecture (\ref{Conjecture-3.3}) holds true, then Theorem \ref{Theorem-4.10} would establish with the exponent 
+$\frac{\tau}{2\tau+2u+d}$, which is known to be order optimal in minimax setting. In the variational method, the convergence result is not affected by the nonlinearity of the forward 
+operator, however Antoniadis and Bigot in \cite{antoniadis2006} are restricted to linear operators in certain function spaces. 
+
+On the other hand, the convergence rate result (\ref{55}) is more explicit and close to optimal rate than the convergence result derived by
+Werner and Hohage \cite{Werner2012}, their convergence rate is strictly smaller than the optimal order $\frac{\tau}{2\tau+2u+d}$. Furthermore,
+here we study the convergence analysis for variational regularization of inverse problems with Poisson and empirical process data simultaneously. 
+
+
+
+\section*{Acknowledgements}
+Financial support by the German research foundation DFG through the research training group 2088, Project B1 is gratefully acknowledged.
+
+
+\section*{Reference}
+
+\begin{thebibliography}{10}
+
+\bibitem{Adams1992}
+D.~R.~ Adams and M.~Frazier.
+\newblock Composition operators on potential spaces.
+\newblock {\em Proceedings of the American Mathematical Society}, 114 (1): 155-165, 1992.
+
+\bibitem{antoniadis2006}
+A.~Antoniadis and J.~Bigot.
+\newblock Poisson inverse problems.
+\newblock {\em Ann. Statist.}, 34(5):2132--2158, 2006.
+
+\bibitem{Benning2011}
+M.~Benning and M.~Burger.
+\newblock Error estimates for general fidelities.
+\newblock {\em Electronic Tansactions on Numerical Analysis}, 38:44--68, 2011.
+
+\bibitem{Bertero2009}
+M.~Bertero, P.~Boccacci, G.~Desiderà, and G.~Vicidomini.
+\newblock Image deblurring with poisson data: from cells to galaxies.
+\newblock {\em Inverse Problems}, 25(12):123006, 2009.
+
+
+\bibitem{Cavalier2002}
+L.~Cavalier and J.-Y. Koo.
+\newblock Poisson intensity estimation for tomographic data using a wavelet
+  shrinkage approach.
+\newblock {\em {IEEE} Transactions on Information Theory}, 48 (10):2794--2802, 2002.
+
+
+\bibitem{Dunker2014}
+F.~Dunker and T.~Hohage.
+\newblock On parameter identification in stochastic differential equations by
+  penalized maximum likelihood.
+\newblock {\em Inverse Problems}, 30 (9):095001, 2014.
+
+
+\bibitem{Ekeland1999}
+I. Ekeland and R. ~T\'{e}mam. 
+\newblock {\em Convex Analysis and Variational Problems}. 
+Society for Industrial and Applied MAthematics, 1999.
+
+\bibitem{Flemming2012}
+J. ~Flemming.
+\newblock {\em Generalized Tikhonov regularization and modern convergence rate theory in Banach space}, 
+Shaker Verlag, Aachen, 2012.
+
+\bibitem{Flemming2011}
+J. ~Flemming, B. ~Hofmann
+\newblock Convergence rates in constrained Tikhonov regularization: equivalence of projected source conditions and
+variational inequalities.
+\newblock {\em Inverse Problems}, 27 (8): 085001, 2011.
+
+\bibitem{FlemmingHofmannn2011}
+J. ~Flemming, B. ~Hofmann and P. ~Math. 
+\newblock Sharp converse results for the regularization error using distance functions.
+\newblock {\em Inverse Problems}, 27 (2): 025006, 2011.
+
+
+\bibitem{Grafakos2009}
+L. ~Grafakos. 
+\newblock {\em Classical Fourier Analysis}, Springer New York, 2009.
+
+\bibitem{Grasmair2010}
+M. Grasmair. 
+\newblock Generalized Bregman distances and convergence rates for non-convex regularization methods,
+\newblock {\em Inverse Problems}, 26 (11): 115014, 2010.
+
+
+\bibitem{Schmeisser1987}
+H. T. ~Hans-Jurgen Schmeisser. 
+\newblock {\em Topics in Fourier Analysis and Function Spaces}, First Edition,
+Wiley, 1987.
+
+
+  
+\bibitem{Hofmann2007}
+B.~Hofmann, B.~Kaltenbacher, C. ~Pschl and O. ~Scherzer. 
+\newblock A convergence rates result for Tikhonov
+regularization in Banach spaces with non-smooth operators.
+\newblock {\em Inverse Problems}, 23 (3), 987-1010, 2007.
+
+\bibitem{Hohage2017}
+T.~Hohage and F.~Weidling
+\newblock Characterizations of variational source conditions, converse results, and maxisets of 
+spectral regularization methods.
+\newblock {\em SIAM Journal of Numerical Analysis}, 55 (2): 598-620, 2017.
+
+\bibitem{Hohage2013}
+T.~Hohage and F.~Werner.
+\newblock Iteratively regularized newton-type methods for general data misfit
+  functionals and applications to poisson data.
+\newblock {\em Numerische Mathematik}, 123 (4):745--779, 2013.
+
+\bibitem{Hohage2014}
+T.~Hohage and F.~Werner.
+\newblock Convergence rates for inverse problems with impulsive noise.
+\newblock {\em {SIAM} Journal on Numerical Analysis}, 52 (3):1203--1221, 2014.
+
+\bibitem{Hohage2016}
+T.~Hohage and F.~Werner.
+\newblock Inverse problems with Poisson data: statistical regularization
+  theory, applications and algorithms.
+\newblock {\em Inverse Problems}, 32 (9):093001, 2016.
+
+\bibitem{Hohage2019}
+T.~Hohage and Philip Miller.
+\newblock Optimal convergence rates for sparsity promoting wavelet-regularization in Besov spaces.
+\newblock {\em Inverse Problems}, 35 (6): 065005, 2019.
+
+
+\bibitem{kingman1993}
+J. F. C. Kingman. 
+\newblock {\em Poisson processes}, Volume 3 of {\em Oxford Studies in Probability}. The Clarendon Press Oxford
+University Press, New York, 1993.
+
+
+\bibitem{Massart2000}
+P.~Massart.
+\newblock About the constants in Talagrand's concentration inequalities for empirical processes.
+\newblock {\em The Annals of Probability}, 28 (2): 863--884, 2000.
+
+\bibitem{Moussai2017}
+M.~ Moussai.
+\newblock On the composition of functions in multidimensional Besov spaces.
+\newblock {\em Mathematical Inequalities {\&} Applications}, 2: 501--514, 2017. 
+
+
+\bibitem{Munk2009}
+A.~Munk and M.~Pricop.
+\newblock On the self-regularization property of the {EM} algorithm for poisson inverse problems.
+\newblock 431--448, 2009.
+
+\bibitem{Nowak2000}
+R.~Nowak and E.~Kolaczyk.
+\newblock A statistical multiscale framework for poisson inverse problems.
+\newblock {\em {IEEE} Transactions on Information Theory}, 46(5):1811--1825, 2000.
+
+
+
+\bibitem{ReynaudBouret2003}
+P.~Reynaud-Bouret.
+\newblock Adaptive estimation of the intensity of inhomogeneous poisson
+  processes via concentration inequalities.
+\newblock {\em Probability Theory and Related Fields}, 126(1):103--153, 2003.
+ 
+
+ \bibitem{Sprung2019}
+B.~ Sprung.
+\newblock Upper and lower bounds for the Bregman divergence.
+\newblock {\em Journal of Inequalities and Applications}, 4(1), 2019.  
+  
+  
+\bibitem{Szkutnik2000}
+Z.~Szkutnik.
+\newblock Unfolding intensity function of a poisson process in models with
+  approximately specified folding operator.
+\newblock {\em Metrika}, 52(1):1--26, 2000.  
+  
+
+\bibitem{Talagrand1996}
+M. ~Talagrand.
+New concentration inequalities in product spaces. 
+\newblock {\em Invent. Math.}. 126 (3): 505-563, 1996.
+
+\bibitem{Triebel1978}
+H. Triebel
+\newblock {\em Interpolation theory, Function spaces, Differential operators}. 
+North-Holland, Amsterdam, 1978.
+
+
+\bibitem{Triebel1983}
+H. Triebel.
+\newblock {\em Theory of Function Spaces}.
+\newblock Springer Basel, 1983.
+
+\bibitem{Triebel2008}
+H. Triebel.
+\newblock Function Spaces and Wavelets on Domains. EMS Tracts in Mathematics
+7. European Mathematical Society, 2008.
+
+
+\bibitem{Tsybakov2009}
+A.~B.~Tsybakov.
+\newblock {\em Introduction to Nonparametric Estimation}.
+\newblock Springer New York, 2009.
+
+
+\bibitem{Vardi1985}
+Y.~Vardi, L.A. ~Shepp and L.~Kuafman. 
+\newblock A Statistical Model for Positron Emission Tomography. 
+\newblock {\em Journal of the American Statistical Association}, 80 (389): 8-20, 1985.
+
+\bibitem{Veraar2011}
+M. C. ~Veraar.
+\newblock Regularity of Gaussian White noise on the $d$-dimensional torus. 
+\newblock {\em Banach Center Publications}, 95: 385-398, 2011.
+
+
+\bibitem{Weidling2017}
+F.~Weidling and T.~Hohage.
+\newblock Variational source conditions and stability estimates for inverse electromagnetic medium scattering problems.
+\newblock {\em Inverse Problems and Imaging}, 11(1), 2017.
+
+
+\bibitem{Weidling2018}
+F.~Weidling, ~B. Sprung and T.~Hohage.
+\newblock Optimal convergence rates for Tikhonov regularization in Besov spaces.
+\newblock {\em Preprint. arxiv.org/abs/1803.11019}, 2018.
+
+
+\bibitem{Werner2012}
+F.~Werner and T.~Hohage.
+\newblock Convergence rates in expectation for Tikhonov-type regularization of
+  inverse problems with poisson data.
+\newblock {\em Inverse Problems}, 28(10):104004, 2012.
+
+\bibitem{Xu1991}
+Z. B Xu and G. F. Roach.
+\newblock Characteristic inequalities of uniformly convex and uniformly smooth Banach spaces.
+\newblock {\em Journal of Mathematical Analysis and Applications}, (157) 189--210, 1991.
+
+\end{thebibliography}
+
+
+
+
+
+
+
+
+
+
+\end{document}
+
